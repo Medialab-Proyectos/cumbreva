@@ -1,9 +1,7 @@
 "use client"
 
-import { MessageCircle } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { buttonVariants } from "@/components/ui/button"
-import { whatsappUrl } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 export function SiteHeader() {
@@ -26,25 +24,13 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2.5">
           <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "hidden h-10 rounded-full border-primary/30 px-5 text-sm font-semibold text-primary hover:bg-primary/10 hover:text-primary sm:inline-flex [&_svg:not([class*='size-'])]:size-4",
-            )}
-          >
-            <MessageCircle className="size-4" />
-            WhatsApp
-          </a>
-          <a
             href="#lista-espera"
             className={cn(
               buttonVariants(),
               "h-10 rounded-full px-5 text-sm font-semibold hover:bg-primary/90",
             )}
           >
-            Unirme
+            Unirme a la lista
           </a>
         </div>
       </div>

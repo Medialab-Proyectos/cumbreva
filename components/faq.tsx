@@ -1,11 +1,11 @@
-const faqs = [
+export const faqs = [
   {
     q: "¿Qué es Cumbreva?",
-    a: "Cumbreva es tu copiloto eléctrico: una app que reúne batería, autonomía, rutas, carga y documentos de tu vehículo eléctrico en un solo lugar.",
+    a: "Cumbreva es tu copiloto eléctrico: reúne batería, autonomía, rutas, carga y los documentos de tu vehículo en un solo lugar. Además se apoya en inteligencia artificial para darte recomendaciones de carga y de uso pensadas para tu vehículo.",
   },
   {
     q: "¿Cuándo estará disponible?",
-    a: "Estamos en fase final de desarrollo. Únete a la lista de espera y serás de los primeros en recibir acceso.",
+    a: "Estamos en la fase final de desarrollo, haciendo validación técnica con distintos vehículos para asegurarnos de que funcione perfecta para ti. Únete a la lista de espera y te iremos compartiendo cada avance.",
   },
   {
     q: "¿Tiene costo unirme a la lista de espera?",
@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: "¿Sirve para cualquier vehículo eléctrico?",
-    a: "Cumbreva está pensado para los principales modelos eléctricos. Cuéntanos el tuyo por WhatsApp y te confirmamos la compatibilidad.",
+    a: "Cumbreva está pensado para los principales modelos eléctricos del mercado y cada día sumamos más. Déjanos los datos de tu vehículo en la lista de espera y te confirmamos la compatibilidad.",
   },
 ]
 

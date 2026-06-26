@@ -1,48 +1,43 @@
 import Image from "next/image"
-import { MessageCircle, CalendarCheck, Check, Star } from "lucide-react"
+import { CalendarCheck, Check, ArrowDown } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
-import { whatsappUrl } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const benefits = ["Acceso anticipado gratis", "Sin permanencia", "Cupos limitados"]
 
 export function Hero() {
   return (
-    <section className="relative isolate flex min-h-[88vh] items-center overflow-hidden">
+    <section className="relative isolate flex min-h-[88svh] items-start overflow-hidden sm:items-center">
       {/* Background photo */}
       <Image
-        src="/hero-person.png"
-        alt="Conductora sonriendo mientras revisa su vehículo eléctrico en la app Cumbreva"
+        src="/hero-route.png"
+        alt="Vehículo eléctrico recorriendo de noche una carretera de montaña con su ruta de carga trazada en verde por Cumbreva"
         fill
         priority
         sizes="100vw"
-        className="object-cover object-[70%_center]"
+        className="object-cover object-[60%_center] lg:object-left"
       />
       {/* Overlays for readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
 
-      <div className="relative mx-auto w-full max-w-6xl px-5 py-24 sm:px-8">
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-28 pt-10 sm:px-8 sm:py-24 lg:grid-cols-[1fr_auto] lg:gap-4">
         <div className="max-w-2xl">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-0.5" aria-hidden="true">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="size-4 fill-primary text-primary" />
-              ))}
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="flex size-2 rounded-full bg-primary shadow-[0_0_12px_2px] shadow-primary/60" aria-hidden="true" />
             <span className="eyebrow text-xs text-primary">Lista de espera abierta</span>
           </div>
 
-          <h1 className="heading-display mt-6 text-balance text-5xl text-foreground sm:text-6xl lg:text-7xl">
-            Maneja eléctrico sin <span className="text-primary">ansiedad de carga</span>
+          <h1 className="heading-display mt-5 text-balance text-4xl text-foreground sm:mt-6 sm:text-6xl lg:text-6xl xl:text-7xl">
+            Maneja un eléctrico sin <span className="text-primary">ansiedad de carga</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
+          <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
             Cumbreva es <span className="font-semibold text-foreground">tu copiloto eléctrico</span>: batería,
             autonomía real, rutas con carga y tus documentos, todo en un solo lugar. Sé de los primeros en probarlo.
           </p>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
             <a
               href="#lista-espera"
               className={cn(buttonVariants({ size: "lg" }), "h-13 px-7 text-base font-semibold")}
@@ -51,20 +46,18 @@ export function Hero() {
               Unirme a la lista
             </a>
             <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#funciones"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
                 "h-13 border-foreground/20 bg-background/40 px-7 text-base font-semibold backdrop-blur hover:bg-background/60",
               )}
             >
-              <MessageCircle className="size-5 text-primary" />
-              Hablar por WhatsApp
+              <ArrowDown className="size-5 text-primary" />
+              Conoce cómo funciona
             </a>
           </div>
 
-          <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3">
+          <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 sm:mt-9">
             {benefits.map((b) => (
               <li key={b} className="flex items-center gap-2 text-sm font-medium text-foreground/90">
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/15">
@@ -74,6 +67,23 @@ export function Hero() {
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* App mockup — solo en desktop para no amontonar el hero móvil */}
+        <div className="relative hidden justify-self-center lg:block">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 scale-125 rounded-full bg-primary/25 blur-[90px]"
+          />
+          <Image
+            src="/cumbreva-app-mockup.png"
+            alt="Pantalla de la app Cumbreva mostrando batería, autonomía y planeación de ruta del vehículo eléctrico"
+            width={649}
+            height={1269}
+            priority
+            sizes="(min-width: 1024px) 300px, 0px"
+            className="h-auto w-[280px] drop-shadow-2xl xl:w-[320px]"
+          />
         </div>
       </div>
     </section>

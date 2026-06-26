@@ -42,14 +42,14 @@ function LogoTrack({ ariaHidden = false }: { ariaHidden?: boolean }) {
             <Image
               src={`/logos/${b.file}`}
               alt={ariaHidden ? "" : b.name}
-              width={120}
-              height={40}
-              className="h-7 w-auto opacity-55 brightness-0 invert transition-opacity duration-300 hover:opacity-100 sm:h-8"
+              width={140}
+              height={48}
+              className="h-10 w-auto opacity-65 brightness-0 invert transition-opacity duration-300 hover:opacity-100 sm:h-12"
             />
           ) : (
             <span
               aria-hidden={ariaHidden}
-              className="font-heading whitespace-nowrap text-2xl font-bold uppercase tracking-tight text-foreground opacity-55 transition-opacity duration-300 hover:opacity-100 sm:text-3xl"
+              className="font-heading whitespace-nowrap text-3xl font-bold uppercase tracking-tight text-foreground opacity-65 transition-opacity duration-300 hover:opacity-100 sm:text-4xl"
             >
               {b.wordmark}
             </span>

@@ -15,7 +15,7 @@ const perks = [
   {
     icon: Headset,
     title: "Soporte directo",
-    desc: "Habla con el equipo por WhatsApp.",
+    desc: "Acompañamiento cercano del equipo en cada paso.",
   },
 ]
 

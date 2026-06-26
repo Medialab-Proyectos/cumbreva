@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, Oswald } from 'next/font/google'
+import { BRAND, SITE_URL } from '@/lib/site'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -14,27 +15,77 @@ const oswald = Oswald({
   weight: ['500', '600', '700'],
 })
 
+const title = 'Cumbreva — Tu copiloto para vehículos eléctricos'
+const description =
+  'Cumbreva es el copiloto inteligente para tu carro eléctrico: batería, autonomía real, rutas con carga, recomendaciones con IA y tus documentos en un solo lugar. Únete a la lista de espera gratis.'
+
 export const metadata: Metadata = {
-  title: 'Cumbreva — Tu copiloto eléctrico',
-  description:
-    'Cumbreva es el copiloto inteligente para tu vehículo eléctrico: batería, autonomía, rutas, carga y documentos en un solo lugar. Únete a la lista de espera.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: title,
+    template: '%s · Cumbreva',
+  },
+  description,
+  applicationName: BRAND.name,
+  generator: 'Next.js',
+  keywords: [
+    'Cumbreva',
+    'app vehículo eléctrico',
+    'copiloto eléctrico',
+    'autonomía vehículo eléctrico',
+    'rutas de carga',
+    'electrolineras Colombia',
+    'carro eléctrico Colombia',
+    'app carga eléctrica',
+    'ansiedad de carga',
+  ],
+  authors: [{ name: BRAND.company, url: BRAND.companyUrl }],
+  creator: BRAND.company,
+  publisher: BRAND.company,
+  category: 'technology',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'es_CO',
+    url: SITE_URL,
+    siteName: BRAND.name,
+    title,
+    description,
+    images: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/og-image.png',
+        width: 1731,
+        height: 909,
+        alt: 'Cumbreva, tu copiloto para vehículos eléctricos: maneja eléctrico sin ansiedad de carga',
       },
     ],
-    apple: '/apple-icon.png',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+    ],
+    apple: '/apple-touch-icon.png',
   },
 }
 
@@ -50,7 +101,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="es-CO"
       className={`dark ${geistSans.variable} ${geistMono.variable} ${oswald.variable}`}
     >
       <body className="bg-background font-sans antialiased">

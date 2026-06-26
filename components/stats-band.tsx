@@ -1,5 +1,5 @@
 const stats = [
-  { value: "+750 km", label: "Autonomía monitoreada" },
+  { value: "+750 km", label: "De autonomía para monitorear" },
   { value: "24/7", label: "Tu vehículo bajo control" },
   { value: "1 app", label: "Todo en un solo lugar" },
   { value: "100%", label: "Pensada para eléctricos" },
