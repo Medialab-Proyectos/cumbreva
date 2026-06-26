@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { CalendarCheck, Check, ArrowDown } from "lucide-react"
+import { ArrowDown, CalendarCheck, Check } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -8,33 +8,35 @@ const benefits = ["Acceso anticipado gratis", "Sin permanencia", "Cupos limitado
 export function Hero() {
   return (
     <section className="relative isolate flex min-h-[88svh] items-start overflow-hidden sm:items-center">
-      {/* Background photo */}
       <Image
         src="/hero-route.png"
-        alt="Vehículo eléctrico recorriendo de noche una carretera de montaña con su ruta de carga trazada en verde por Cumbreva"
+        alt="Vehiculo electrico recorriendo una carretera con su ruta de carga trazada por Cumbreva"
         fill
         priority
         sizes="100vw"
         className="object-cover object-[60%_center] lg:object-left"
       />
-      {/* Overlays for readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
 
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-28 pt-10 sm:px-8 sm:py-24 lg:grid-cols-[1fr_auto] lg:gap-4">
         <div className="max-w-2xl">
           <div className="flex items-center gap-2">
-            <span className="flex size-2 rounded-full bg-primary shadow-[0_0_12px_2px] shadow-primary/60" aria-hidden="true" />
+            <span
+              className="flex size-2 rounded-full bg-primary shadow-[0_0_12px_2px] shadow-primary/60"
+              aria-hidden="true"
+            />
             <span className="eyebrow text-xs text-primary">Lista de espera abierta</span>
           </div>
 
           <h1 className="heading-display mt-5 text-balance text-4xl text-foreground sm:mt-6 sm:text-6xl lg:text-6xl xl:text-7xl">
-            Maneja un eléctrico sin <span className="text-primary">ansiedad de carga</span>
+            Maneja un electrico sin <span className="text-primary">ansiedad de carga</span>
           </h1>
 
           <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
-            Cumbreva es <span className="font-semibold text-foreground">tu copiloto eléctrico</span>: batería,
-            autonomía real, rutas con carga y tus documentos, todo en un solo lugar. Sé de los primeros en probarlo.
+            Cumbreva es <span className="font-semibold text-foreground">tu copiloto electrico</span>:
+            bateria, autonomia real, rutas con carga y documentos del vehiculo, todo en
+            un solo lugar. Ideal para quien busca una app para carro electrico en Colombia.
           </p>
 
           <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
@@ -53,23 +55,25 @@ export function Hero() {
               )}
             >
               <ArrowDown className="size-5 text-primary" />
-              Conoce cómo funciona
+              Conoce como funciona
             </a>
           </div>
 
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 sm:mt-9">
-            {benefits.map((b) => (
-              <li key={b} className="flex items-center gap-2 text-sm font-medium text-foreground/90">
+            {benefits.map((benefit) => (
+              <li
+                key={benefit}
+                className="flex items-center gap-2 text-sm font-medium text-foreground/90"
+              >
                 <span className="flex size-5 items-center justify-center rounded-full bg-primary/15">
                   <Check className="size-3 text-primary" />
                 </span>
-                {b}
+                {benefit}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* App mockup — solo en desktop para no amontonar el hero móvil */}
         <div className="relative hidden justify-self-center lg:block">
           <div
             aria-hidden
@@ -77,7 +81,7 @@ export function Hero() {
           />
           <Image
             src="/cumbreva-app-mockup.png"
-            alt="Pantalla de la app Cumbreva mostrando batería, autonomía y planeación de ruta del vehículo eléctrico"
+            alt="Pantalla de la app Cumbreva mostrando bateria, autonomia y planeacion de ruta del vehiculo electrico"
             width={649}
             height={1269}
             priority

@@ -1,21 +1,21 @@
-import { Gift, Clock, Headset } from "lucide-react"
+import { Clock, Gift, Headset } from "lucide-react"
 import { WaitlistForm } from "@/components/waitlist-form"
 
 const perks = [
   {
     icon: Gift,
     title: "Acceso anticipado",
-    desc: "Úsalo antes del lanzamiento oficial.",
+    desc: "Usalo antes del lanzamiento oficial.",
   },
   {
     icon: Clock,
-    title: "Sé de los primeros",
-    desc: "Entérate antes que nadie del lanzamiento.",
+    title: "Se de los primeros",
+    desc: "Enterate antes que nadie del lanzamiento.",
   },
   {
     icon: Headset,
     title: "Soporte directo",
-    desc: "Acompañamiento cercano del equipo en cada paso.",
+    desc: "Acompanamiento cercano del equipo en cada paso.",
   },
 ]
 
@@ -29,10 +29,11 @@ export function WaitlistSection() {
       <div className="relative mx-auto max-w-2xl px-5 text-center sm:px-8">
         <p className="eyebrow mb-4 text-xs text-primary">Lista de espera</p>
         <h2 className="heading-display text-balance text-4xl text-foreground sm:text-5xl">
-          Únete a la lista de espera
+          Unete a la lista de espera
         </h2>
         <p className="mx-auto mt-5 max-w-md text-pretty text-lg leading-relaxed text-muted-foreground">
-          Déjanos tus datos y te avisaremos apenas Cumbreva esté disponible. Sé de los primeros en tener tu copiloto eléctrico.
+          Dejanos tus datos y te avisaremos apenas Cumbreva este disponible. Se de los
+          primeros en probar un copiloto para carro electrico pensado para Colombia.
         </p>
 
         <ul className="mt-10 grid gap-3 sm:grid-cols-3">

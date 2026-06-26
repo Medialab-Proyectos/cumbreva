@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-type Status = "idle" | "loading" | "success"
+type Status = "idle" | "loading" | "success" | "error"
 
 const initialForm = {
   nombre: "",
@@ -57,14 +57,20 @@ export function WaitlistForm({ className }: { className?: string }) {
     ) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setStatus("loading")
-    // UI por ahora: simulamos el envío al CRM.
-    setTimeout(() => {
-      console.log("[v0] Lead capturado:", form)
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error("request failed")
       setStatus("success")
-    }, 900)
+    } catch {
+      setStatus("error")
+    }
   }
 
   if (status === "success") {
@@ -230,9 +236,15 @@ export function WaitlistForm({ className }: { className?: string }) {
         )}
       </Button>
 
-      <p className="mt-3 text-center text-xs text-muted-foreground">
-        Sin spam. Solo te avisamos cuando Cumbreva esté listo.
-      </p>
+      {status === "error" ? (
+        <p className="mt-3 text-center text-xs text-destructive">
+          Ups, no pudimos registrarte. Verifica tu correo e inténtalo de nuevo.
+        </p>
+      ) : (
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          Sin spam. Solo te avisamos cuando Cumbreva esté listo.
+        </p>
+      )}
     </form>
   )
 }

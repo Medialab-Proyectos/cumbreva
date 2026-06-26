@@ -1,27 +1,26 @@
-// Configuración central de Cumbreva. Edita estos valores fácilmente.
+// Configuracion central de Cumbreva. Edita estos valores facilmente.
 
-// Número de WhatsApp en formato internacional, solo dígitos (sin + ni espacios).
+// Numero de WhatsApp en formato internacional, solo digitos (sin + ni espacios).
 export const WHATSAPP_NUMBER = "573000000000"
 
 export const WHATSAPP_MESSAGE =
-  "Hola, quiero más información sobre Cumbreva y unirme a la lista de espera."
+  "Hola, quiero mas informacion sobre Cumbreva y unirme a la lista de espera."
 
 export const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
   WHATSAPP_MESSAGE,
 )}`
 
-// URL de producción. Configúrala en Vercel/host con NEXT_PUBLIC_SITE_URL.
-// El default debe reemplazarse por el dominio real cuando se confirme.
+// URL de produccion. Se puede sobreescribir en Vercel con NEXT_PUBLIC_SITE_URL.
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://cumbreva.com"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://cumbreva.medialab.design"
 ).replace(/\/$/, "")
 
 export const BRAND = {
   name: "Cumbreva",
-  tagline: "Tu copiloto eléctrico",
+  tagline: "Tu copiloto electrico",
   description:
-    "Cumbreva es el copiloto inteligente para tu vehículo eléctrico: batería, autonomía real, rutas con carga, recomendaciones con IA y tus documentos en un solo lugar.",
-  company: "Medialab Ingeniería",
+    "Cumbreva es una app para carro electrico en Colombia con bateria, autonomia real, rutas con carga, recomendaciones y documentos del vehiculo en un solo lugar.",
+  company: "Medialab Ingenieria",
   companyUrl: "https://medialab.design/",
   country: "Colombia",
   email: "medialabproyectos@gmail.com",

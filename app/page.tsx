@@ -1,14 +1,14 @@
-import { SiteHeader } from "@/components/site-header"
-import { Hero } from "@/components/hero"
-import { StatsBand } from "@/components/stats-band"
-import { BrandMarquee } from "@/components/brand-marquee"
-import { Features } from "@/components/features"
 import { AppShowcase } from "@/components/app-showcase"
-import { WaitlistSection } from "@/components/waitlist-section"
+import { BrandMarquee } from "@/components/brand-marquee"
 import { Faq } from "@/components/faq"
+import { Features } from "@/components/features"
+import { Hero } from "@/components/hero"
 import { SiteFooter } from "@/components/site-footer"
-import { WhatsAppBanner } from "@/components/whatsapp-banner"
+import { SiteHeader } from "@/components/site-header"
+import { StatsBand } from "@/components/stats-band"
 import { StructuredData } from "@/components/structured-data"
+import { WaitlistSection } from "@/components/waitlist-section"
+import { WhatsAppBanner } from "@/components/whatsapp-banner"
 
 export default function Page() {
   return (
