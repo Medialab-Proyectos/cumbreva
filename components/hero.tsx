@@ -1,5 +1,6 @@
 import Image from "next/image"
-import { ArrowDown, CalendarCheck, Check } from "lucide-react"
+import Link from "next/link"
+import { ArrowDown, CalendarCheck, Check, Mountain } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -58,6 +59,17 @@ export function Hero() {
               Conoce como funciona
             </a>
           </div>
+
+          <Link
+            href="/calculadora"
+            className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <span className="flex size-7 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+              <Mountain className="size-3.5" />
+            </span>
+            Prueba gratis la calculadora de autonomía real
+            <ArrowDown className="size-4 -rotate-90 text-primary transition-transform group-hover:translate-x-0.5" />
+          </Link>
 
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 sm:mt-9">
             {benefits.map((benefit) => (
