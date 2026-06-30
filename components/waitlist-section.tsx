@@ -36,11 +36,11 @@ export function WaitlistSection() {
           primeros en probar un copiloto para carro electrico pensado para Colombia.
         </p>
 
-        <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+        <ul className="-mx-5 mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {perks.map((perk) => (
             <li
               key={perk.title}
-              className="rounded-2xl border border-border bg-card p-5 text-left"
+              className="w-[78%] shrink-0 snap-start rounded-2xl border border-border bg-card p-5 text-left sm:w-auto"
             >
               <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
                 <perk.icon className="size-5" />

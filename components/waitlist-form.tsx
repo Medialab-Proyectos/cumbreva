@@ -2,13 +2,13 @@
 
 import { useState, type FormEvent } from "react"
 import {
+  Car,
   CheckCircle2,
+  Gauge,
   Loader2,
   Mail,
-  User,
-  Car,
-  Gauge,
   MessageSquare,
+  User,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -45,15 +45,17 @@ const vehiculos = [
   "Aún no tengo eléctrico",
 ]
 
+// Misma estética que la calculadora: campos abiertos (subrayado), no cajitas.
+const inputBase =
+  "w-full border-0 border-b-2 border-border bg-transparent px-0.5 py-2.5 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/45 focus:border-primary"
+
 export function WaitlistForm({ className }: { className?: string }) {
   const [status, setStatus] = useState<Status>("idle")
   const [form, setForm] = useState(initialForm)
 
   function update(field: keyof typeof form) {
     return (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >,
+      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     ) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
   }
 
@@ -77,7 +79,7 @@ export function WaitlistForm({ className }: { className?: string }) {
     return (
       <div
         className={cn(
-          "flex flex-col items-center gap-4 rounded-3xl border border-primary/30 bg-card/60 p-8 text-center",
+          "flex flex-col items-center gap-4 rounded-2xl border border-primary/30 bg-card/60 p-8 text-center",
           className,
         )}
       >
@@ -85,12 +87,10 @@ export function WaitlistForm({ className }: { className?: string }) {
           <CheckCircle2 className="size-8" />
         </span>
         <div className="space-y-1">
-          <h3 className="text-xl font-semibold text-foreground">
-            ¡Estás en la lista!
-          </h3>
-          <p className="text-sm text-muted-foreground text-pretty">
-            Listo, {form.nombre.split(" ")[0] || "crack"}. Te avisaremos apenas
-            Cumbreva esté disponible y te mantendremos al tanto de cada avance.
+          <h3 className="text-xl font-semibold text-foreground">¡Estás en la lista!</h3>
+          <p className="text-sm text-pretty text-muted-foreground">
+            Listo, {form.nombre.split(" ")[0] || "crack"}. Te avisaremos apenas Cumbreva esté disponible y te
+            mantendremos al tanto de cada avance.
           </p>
         </div>
         <Button
@@ -110,32 +110,21 @@ export function WaitlistForm({ className }: { className?: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className={cn(
-        "rounded-2xl border border-border bg-card p-6 sm:p-8",
-        className,
-      )}
+      className={cn("rounded-2xl border border-border/60 bg-card/40 p-6 sm:p-8", className)}
     >
-      <div className="space-y-4">
-        <Field
-          icon={<User className="size-4" />}
-          label="Nombre completo"
-          htmlFor="nombre"
-        >
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field icon={<User className="size-3.5" />} label="Nombre completo" htmlFor="nombre" className="sm:col-span-2">
           <input
             id="nombre"
             required
             value={form.nombre}
             onChange={update("nombre")}
             placeholder="Ej. Juan Pérez"
-            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+            className={inputBase}
           />
         </Field>
 
-        <Field
-          icon={<Mail className="size-4" />}
-          label="Correo electrónico"
-          htmlFor="email"
-        >
+        <Field icon={<Mail className="size-3.5" />} label="Correo electrónico" htmlFor="email" className="sm:col-span-2">
           <input
             id="email"
             type="email"
@@ -143,20 +132,16 @@ export function WaitlistForm({ className }: { className?: string }) {
             value={form.email}
             onChange={update("email")}
             placeholder="tucorreo@email.com"
-            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+            className={inputBase}
           />
         </Field>
 
-        <Field
-          icon={<Car className="size-4" />}
-          label="¿Qué vehículo tienes? (para enviarte consejos útiles)"
-          htmlFor="vehiculo"
-        >
+        <Field icon={<Car className="size-3.5" />} label="¿Qué vehículo tienes?" htmlFor="vehiculo" className={form.vehiculo === "Otra marca" ? "" : "sm:col-span-2"}>
           <select
             id="vehiculo"
             value={form.vehiculo}
             onChange={update("vehiculo")}
-            className="w-full bg-transparent text-sm text-foreground outline-none [&>option]:bg-card [&>option]:text-foreground"
+            className={cn(inputBase, "[&>option]:bg-card [&>option]:text-foreground")}
           >
             <option value="" disabled>
               Selecciona tu marca
@@ -170,27 +155,19 @@ export function WaitlistForm({ className }: { className?: string }) {
         </Field>
 
         {form.vehiculo === "Otra marca" && (
-          <Field
-            icon={<Car className="size-4" />}
-            label="¿Cuál es tu marca? (la sumamos a la lista)"
-            htmlFor="otraMarca"
-          >
+          <Field icon={<Car className="size-3.5" />} label="¿Cuál es tu marca?" htmlFor="otraMarca">
             <input
               id="otraMarca"
               required
               value={form.otraMarca}
               onChange={update("otraMarca")}
-              placeholder="Ej. Tesla, Seres, Dongfeng…"
-              className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+              placeholder="Ej. Tesla, Seres…"
+              className={inputBase}
             />
           </Field>
         )}
 
-        <Field
-          icon={<Gauge className="size-4" />}
-          label="¿Cuántos kilómetros tiene? (opcional)"
-          htmlFor="kilometros"
-        >
+        <Field icon={<Gauge className="size-3.5" />} label="Kilómetros (opcional)" htmlFor="kilometros" className="sm:col-span-2">
           <input
             id="kilometros"
             type="number"
@@ -199,33 +176,23 @@ export function WaitlistForm({ className }: { className?: string }) {
             value={form.kilometros}
             onChange={update("kilometros")}
             placeholder="Ej. 25000"
-            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+            className={inputBase}
           />
         </Field>
 
-        <Field
-          icon={<MessageSquare className="size-4" />}
-          label="¿Algún comentario o problema con tu vehículo? (opcional)"
-          htmlFor="comentario"
-          align="start"
-        >
+        <Field icon={<MessageSquare className="size-3.5" />} label="Comentario (opcional)" htmlFor="comentario" className="sm:col-span-2">
           <textarea
             id="comentario"
             rows={3}
             value={form.comentario}
             onChange={update("comentario")}
             placeholder="Cuéntanos qué te gustaría resolver con Cumbreva…"
-            className="w-full resize-none bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+            className={cn(inputBase, "resize-none")}
           />
         </Field>
       </div>
 
-      <Button
-        type="submit"
-        size="lg"
-        disabled={status === "loading"}
-        className="mt-6 h-13 w-full text-base font-semibold"
-      >
+      <Button type="submit" size="lg" disabled={status === "loading"} className="mt-7 h-13 w-full text-base font-semibold">
         {status === "loading" ? (
           <>
             <Loader2 className="size-4 animate-spin" />
@@ -254,29 +221,21 @@ function Field({
   label,
   htmlFor,
   children,
-  align = "center",
+  className,
 }: {
   icon: React.ReactNode
   label: string
   htmlFor: string
   children: React.ReactNode
-  align?: "center" | "start"
+  className?: string
 }) {
   return (
-    <label
-      htmlFor={htmlFor}
-      className="flex flex-col gap-1.5 rounded-2xl border border-border bg-background/40 px-4 py-3 transition-colors focus-within:border-primary/60"
-    >
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
-      <span
-        className={cn(
-          "flex gap-2 text-primary",
-          align === "start" ? "items-start" : "items-center",
-        )}
-      >
-        {icon}
-        {children}
+    <label htmlFor={htmlFor} className={cn("flex flex-col gap-1.5", className)}>
+      <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <span className="text-primary">{icon}</span>
+        {label}
       </span>
+      {children}
     </label>
   )
 }
