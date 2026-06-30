@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ArrowLeft, Loader2, MapPin, Zap } from "lucide-react"
+import { ArrowLeft, ChevronDown, History, Loader2, MapPin, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
@@ -59,6 +59,12 @@ export function Calculator() {
   const [errReg, setErrReg] = useState("")
   const [reenvioEn, setReenvioEn] = useState(0)
 
+  // App: pestañas (Calcular / Historial) y acordeón de especificaciones
+  const [tab, setTab] = useState<"calcular" | "historial">("calcular")
+  const [verSpecs, setVerSpecs] = useState(false)
+  const [histItems, setHistItems] = useState<{ origen: string; destino: string; distKm?: number; alcanza?: boolean; ts: number }[]>([])
+  const [histCargando, setHistCargando] = useState(false)
+
   const tO = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const tD = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -81,16 +87,6 @@ export function Calculator() {
         }
         setLimite(j.limite ?? 2)
         setRestantes(j.restantes ?? 0)
-
-        // Instalada como app (PWA): pedir el correo para continuar.
-        const standalone =
-          window.matchMedia("(display-mode: standalone)").matches ||
-          // @ts-expect-error iOS Safari
-          window.navigator.standalone === true
-        if (standalone && j.estado !== "registrado") {
-          setFase(j.estado === "regresa_sin_registro" ? "yaregistrado" : "datos")
-          setMuro(true)
-        }
       } catch {
         /* sin BD: cae a límite anónimo por defecto */
       }
@@ -113,6 +109,17 @@ export function Calculator() {
     const t = setTimeout(() => setReenvioEn((s) => s - 1), 1000)
     return () => clearTimeout(t)
   }, [reenvioEn])
+
+  // Carga el historial al abrir la pestaña (solo registrado)
+  useEffect(() => {
+    if (tab !== "historial" || !registrado) return
+    setHistCargando(true)
+    fetch("/api/calc/historial", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => setHistItems(j.items ?? []))
+      .catch(() => {})
+      .finally(() => setHistCargando(false))
+  }, [tab, registrado])
 
   const buscarSug = (txt: string, set: (p: Punto[]) => void) => {
     if (txt.trim().length < 3) return set([])
@@ -206,8 +213,8 @@ export function Calculator() {
   // Pedir OTP (registro nuevo o entrada de usuario existente)
   const pedirCodigo = useCallback(async () => {
     setErrReg("")
-    if (fase === "datos" && !nombre.trim()) {
-      setErrReg("Escribe tu nombre.")
+    if (!email.trim()) {
+      setErrReg("Escribe tu correo.")
       return
     }
     setEnviando(true)
@@ -296,7 +303,27 @@ export function Calculator() {
         <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
       </header>
 
-      {res ? (
+      {/* Pestañas de la app (tras ingresar el correo) */}
+      {registrado && (
+        <div className="mb-5 grid grid-cols-2 gap-1 rounded-2xl border border-border bg-card/40 p-1">
+          <button
+            onClick={() => setTab("calcular")}
+            className={cn("flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-colors", tab === "calcular" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
+          >
+            <Zap className="size-4" /> Calcular
+          </button>
+          <button
+            onClick={() => setTab("historial")}
+            className={cn("flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-colors", tab === "historial" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
+          >
+            <History className="size-4" /> Historial
+          </button>
+        </div>
+      )}
+
+      {registrado && tab === "historial" ? (
+        <HistorialView items={histItems} cargando={histCargando} onIr={() => setTab("calcular")} />
+      ) : res ? (
         /* ---- Vista de resultado (como pantalla de app) ---- */
         <div>
           <button
@@ -358,6 +385,11 @@ export function Calculator() {
       ) : (
         /* ---- Vista de formulario (botón sticky abajo) ---- */
         <>
+          <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+            Calcula si tu batería <span className="text-foreground">realmente alcanza</span> entre dos puntos, corrigiendo
+            por el terreno real de la ruta: pendiente, altitud y clima. Indica el origen, el destino y tu carga actual.
+          </p>
+
           {/* Ruta */}
           <section className={cn(card, "mb-4")}>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -371,8 +403,8 @@ export function Calculator() {
             <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <Zap className="size-4 text-primary" /> Tu vehículo eléctrico
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
+            <div className="grid gap-4">
+              <div>
                 <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">Modelo</label>
                 <select
                   value={evId}
@@ -386,11 +418,26 @@ export function Calculator() {
                   ))}
                 </select>
               </div>
-              <NumField label="Capacidad batería" unit="kWh" value={kwh} onChange={setKwh} step={0.5} />
-              <NumField label="Consumo nominal" unit="Wh/km" value={whkm} onChange={setWhkm} step={1} />
-              <NumField label="Peso del vehículo" unit="kg" value={masa} onChange={setMasa} step={50} />
-              <NumField label="Carga actual" unit="%" value={bateria} onChange={setBateria} step={5} max={100} />
+              {/* Lo más importante: con cuánta carga sale */}
+              <NumField label="Carga actual de la batería" unit="%" value={bateria} onChange={setBateria} step={5} max={100} />
             </div>
+
+            {/* Especificaciones en acordeón (la app queda más pequeña) */}
+            <button
+              type="button"
+              onClick={() => setVerSpecs((v) => !v)}
+              className="mt-4 flex w-full items-center justify-between py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Especificaciones del vehículo
+              <ChevronDown className={cn("size-4 transition-transform", verSpecs && "rotate-180")} />
+            </button>
+            {verSpecs && (
+              <div className="mt-3 grid gap-4 sm:grid-cols-3">
+                <NumField label="Capacidad" unit="kWh" value={kwh} onChange={setKwh} step={0.5} />
+                <NumField label="Consumo" unit="Wh/km" value={whkm} onChange={setWhkm} step={1} />
+                <NumField label="Peso" unit="kg" value={masa} onChange={setMasa} step={50} />
+              </div>
+            )}
           </section>
 
           {error && <p className="mb-2 text-sm text-destructive">{error}</p>}
@@ -427,11 +474,10 @@ export function Calculator() {
                 Te enviamos un código para activar tus 7 búsquedas diarias gratis y guardar tu historial.
               </p>
               <div className="flex flex-col gap-3">
-                <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" className={inputBase} />
-                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tucorreo@ejemplo.com" type="email" inputMode="email" onKeyDown={(e) => e.key === "Enter" && pedirCodigo()} className={inputBase} />
+                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tucorreo@ejemplo.com" type="email" inputMode="email" onKeyDown={(e) => e.key === "Enter" && pedirCodigo()} className={inputBase} autoFocus />
                 {errReg && <p className="text-xs text-destructive">{errReg}</p>}
                 <Button size="lg" onClick={pedirCodigo} disabled={enviando} className="h-12 font-semibold">
-                  {enviando ? <><Loader2 className="size-4 animate-spin" /> Enviando código…</> : "Registrarme y recibir código"}
+                  {enviando ? <><Loader2 className="size-4 animate-spin" /> Enviando código…</> : "Recibir código"}
                 </Button>
                 <button onClick={() => { setErrReg(""); setFase("yaregistrado") }} disabled={enviando} className="text-xs text-primary">
                   Ya me registré antes
@@ -541,8 +587,62 @@ function CuotaBadge({ registrado, restantes, limite }: { registrado: boolean; re
       <span className={cn("size-2 rounded-full", agotada ? "bg-amber-400" : "bg-primary")} />
       {agotada
         ? registrado ? "Sin cuota hoy" : "Regístrate"
-        : `${restantes}/${limite} ${registrado ? "hoy" : "gratis"}`}
+        : `${limite - restantes}/${limite} ${registrado ? "usadas hoy" : "usadas"}`}
     </div>
+  )
+}
+
+function HistorialView({
+  items,
+  cargando,
+  onIr,
+}: {
+  items: { origen: string; destino: string; distKm?: number; alcanza?: boolean; ts: number }[]
+  cargando: boolean
+  onIr: () => void
+}) {
+  if (cargando) {
+    return (
+      <div className="flex justify-center py-16 text-muted-foreground">
+        <Loader2 className="size-5 animate-spin" />
+      </div>
+    )
+  }
+  if (!items.length) {
+    return (
+      <div className="rounded-2xl border border-border bg-card/40 p-8 text-center">
+        <History className="mx-auto size-8 text-muted-foreground/50" />
+        <p className="mt-3 text-sm text-muted-foreground">Aún no tienes búsquedas. Calcula tu primera ruta.</p>
+        <Button onClick={onIr} className="mt-4 font-semibold">Calcular una ruta</Button>
+      </div>
+    )
+  }
+  const recorta = (t: string) => {
+    const s = (t || "").split(",")[0]
+    return s.length > 18 ? s.slice(0, 17) + "…" : s
+  }
+  return (
+    <section className="rounded-2xl border border-border bg-card/40 p-5 sm:p-6">
+      <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tus búsquedas recientes</div>
+      <ul className="flex flex-col divide-y divide-border">
+        {items.map((b, i) => (
+          <li key={i} className="flex items-center justify-between gap-3 py-3 text-sm">
+            <span className="flex min-w-0 items-center gap-2 text-foreground">
+              <MapPin className="size-3.5 shrink-0 text-primary" />
+              <span className="truncate">{recorta(b.origen)} → {recorta(b.destino)}</span>
+            </span>
+            <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+              {b.distKm ? `${Math.round(b.distKm)} km` : ""}
+              {typeof b.alcanza === "boolean" && (
+                <span className={cn("rounded-full px-2 py-0.5", b.alcanza ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive")}>
+                  {b.alcanza ? "alcanza" : "no alcanza"}
+                </span>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
