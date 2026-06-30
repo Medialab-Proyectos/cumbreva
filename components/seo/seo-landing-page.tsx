@@ -13,37 +13,61 @@ import { CumbrevaExplainer } from "@/components/seo/cumbreva-explainer"
 import { Logo } from "@/components/logo"
 import { SiteFooter } from "@/components/site-footer"
 import { buttonVariants } from "@/components/ui/button"
-import { BRAND } from "@/lib/site"
+import { BRAND, SITE_URL } from "@/lib/site"
 import type { SeoLanding } from "@/lib/seo-landings"
 import { absoluteLandingUrl } from "@/lib/seo-landings"
-import { breadcrumbJsonLd } from "@/lib/seo-jsonld"
+import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo-jsonld"
 import { cn } from "@/lib/utils"
 
 const detailIcons = [Gauge, MapPinned, BatteryCharging]
 
 export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
   const pagePath = `/seo/${landing.slug}`
+  const pageUrl = absoluteLandingUrl(landing.slug)
+  const homeUrl = `${SITE_URL}/`
   const breadcrumbItems = [
     { label: "Cumbreva", href: "/" },
-    { label: "Landings SEO" },
+    { label: "Guías" },
     { label: landing.title, href: pagePath },
   ]
   const jsonLd = [
     {
       "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: BRAND.name,
+      url: homeUrl,
+      logo: `${SITE_URL}/android-chrome-512x512.png`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: BRAND.name,
+      url: homeUrl,
+      inLanguage: "es-CO",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+    {
+      "@context": "https://schema.org",
       "@type": "WebPage",
+      "@id": `${pageUrl}#webpage`,
       name: landing.title,
       description: landing.metaDescription,
-      url: absoluteLandingUrl(landing.slug),
+      url: pageUrl,
       inLanguage: "es-CO",
-      isPartOf: {
-        "@type": "WebSite",
-        name: BRAND.name,
-      },
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      primaryImageOfPage: landing.heroImage
+        ? { "@type": "ImageObject", url: absoluteUrl(landing.heroImage) }
+        : undefined,
     },
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "@id": `${pageUrl}#faq`,
+      inLanguage: "es-CO",
+      isPartOf: { "@id": `${pageUrl}#webpage` },
       mainEntity: landing.faq.map((item) => ({
         "@type": "Question",
         name: item.question,
