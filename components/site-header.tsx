@@ -1,7 +1,7 @@
 "use client"
 
-import { ShoppingBag } from "lucide-react"
 import { Logo } from "@/components/logo"
+import { CartButton } from "@/components/tienda/cart-button"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -27,13 +27,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          <a
-            href="/tienda"
-            aria-label="Tienda"
-            className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-          >
-            <ShoppingBag className="size-5" />
-          </a>
+          <CartButton />
           <a
             href="#lista-espera"
             className={cn(

@@ -2,6 +2,8 @@ import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Oswald } from "next/font/google"
 import { PwaRegister } from "@/components/pwa-register"
+import { CartProvider } from "@/components/tienda/cart-context"
+import { CartDrawer } from "@/components/tienda/cart-drawer"
 import { BRAND, SITE_URL } from "@/lib/site"
 import "./globals.css"
 
@@ -112,7 +114,10 @@ export default function RootLayout({
       className={`dark ${geistSans.variable} ${geistMono.variable} ${oswald.variable}`}
     >
       <body className="bg-background font-sans antialiased">
-        {children}
+        <CartProvider>
+          {children}
+          <CartDrawer />
+        </CartProvider>
         <PwaRegister />
         <Analytics />
       </body>
