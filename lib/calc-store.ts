@@ -164,9 +164,21 @@ export async function upsertUser(
       ...patch,
     }
     await kv.set(`calc:user:${e}`, next)
+    await kv.sadd("calc:users", e) // índice para el panel de administración
     return next
   } catch {
     return null
+  }
+}
+
+/** Lista los correos de todos los usuarios (para el panel de administración). */
+export async function listarEmails(): Promise<string[]> {
+  const kv = await getKv()
+  if (!kv) return []
+  try {
+    return (await kv.smembers("calc:users")) ?? []
+  } catch {
+    return []
   }
 }
 
