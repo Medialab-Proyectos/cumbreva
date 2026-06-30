@@ -22,9 +22,9 @@ export default function Page() {
         <BrandMarquee />
         <Features />
         <AppShowcase />
-        <StoreTeaser />
         <WaitlistSection />
         <Faq />
+        <StoreTeaser />
       </main>
       <SiteFooter />
       <WhatsAppBanner />
