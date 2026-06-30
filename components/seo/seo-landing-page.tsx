@@ -16,11 +16,18 @@ import { buttonVariants } from "@/components/ui/button"
 import { BRAND } from "@/lib/site"
 import type { SeoLanding } from "@/lib/seo-landings"
 import { absoluteLandingUrl } from "@/lib/seo-landings"
+import { breadcrumbJsonLd } from "@/lib/seo-jsonld"
 import { cn } from "@/lib/utils"
 
 const detailIcons = [Gauge, MapPinned, BatteryCharging]
 
 export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
+  const pagePath = `/seo/${landing.slug}`
+  const breadcrumbItems = [
+    { label: "Cumbreva", href: "/" },
+    { label: "Landings SEO" },
+    { label: landing.title, href: pagePath },
+  ]
   const jsonLd = [
     {
       "@context": "https://schema.org",
@@ -46,6 +53,7 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
         },
       })),
     },
+    breadcrumbJsonLd(breadcrumbItems),
   ]
 
   return (
@@ -137,7 +145,20 @@ export function SeoLandingPage({ landing }: { landing: SeoLanding }) {
                   className="aspect-[4/3] w-full object-cover"
                 />
                 <figcaption className="border-t border-border/70 p-4 text-sm text-muted-foreground">
-                  {landing.intent}
+                  <span>{landing.intent}</span>
+                  {landing.imageCredit ? (
+                    <span className="mt-3 block text-xs text-muted-foreground/70">
+                      Imagen:{" "}
+                      <a
+                        href={landing.imageCredit.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-primary underline-offset-4 hover:underline"
+                      >
+                        {landing.imageCredit.label}
+                      </a>
+                    </span>
+                  ) : null}
                 </figcaption>
               </figure>
             </div>

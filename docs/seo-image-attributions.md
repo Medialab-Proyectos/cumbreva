@@ -1,0 +1,60 @@
+# Atribuciones De Imagenes SEO
+
+Imagenes descargadas desde Wikimedia Commons para uso local en landings SEO de Cumbreva.
+
+- `public/seo-assets/vehicles/byd-yuan-up.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:BYD_Yuan_Up_001_(cropped).jpg
+  - Autor/credito: JustAnotherCarDesigner
+  - Licencia: CC0
+- `public/seo-assets/vehicles/byd-seagull.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:2023_BYD_Seagull_(front).jpg
+  - Autor/credito: User3204
+  - Licencia: CC BY-SA 4.0
+- `public/seo-assets/vehicles/volvo-ex30.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Volvo_EX30_DSC_6073.jpg
+  - Autor/credito: Alexander-93
+  - Licencia: CC BY-SA 4.0
+- `public/seo-assets/vehicles/kia-ev5.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Kia_EV5_IMG01.jpg
+  - Autor/credito: John kwame westafrica
+  - Licencia: CC0
+- `public/seo-assets/vehicles/mg4.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:MG4_EV_DSC_7236.jpg
+  - Autor/credito: Alexander Migl
+  - Licencia: CC BY-SA 4.0
+- `public/seo-assets/vehicles/tesla-model-y.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Tesla_Model_Y_1X7A6211.jpg
+  - Autor/credito: Alexander Migl
+  - Licencia: CC BY-SA 4.0
+- `public/seo-assets/vehicles/renault-kwid.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:2023_Renault_Kwid_Iconic_(Colombia)_front_view_01.png
+  - Autor/credito: Autosdeprimera
+  - Licencia: CC BY 3.0
+- `public/seo-assets/places/bogota.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Bogota_cityscape_3.jpg
+  - Autor/credito: Lorna Phillips
+  - Licencia: CC BY 2.0
+- `public/seo-assets/places/girardot.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Rio_Magdalena,_Girardot_Colombia._-_panoramio.jpg
+  - Autor/credito: Jimmy Gomez N
+  - Licencia: CC BY-SA 3.0
+- `public/seo-assets/places/villavicencio.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Villavicencio,_Meta,_Colombia_-_panoramio_(7).jpg
+  - Autor/credito: CarlosE Duarte
+  - Licencia: CC BY 3.0
+- `public/seo-assets/places/medellin.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:City_of_Medellin.jpg
+  - Autor/credito: I.D. R.J.
+  - Licencia: CC BY-SA 2.0
+- `public/seo-assets/places/eje-cafetero.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Cafetales,_en_Colombia.jpg
+  - Autor/credito: Triangulo del Cafe Travel
+  - Licencia: CC BY 2.0
+- `public/seo-assets/places/cali.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Cali_downtown-_skyline.jpg
+  - Autor/credito: Johannes Bud
+  - Licencia: CC BY-SA 4.0
+- `public/seo-assets/places/popayan.jpg`
+  - Fuente: https://commons.wikimedia.org/wiki/File:Popayan.jpg
+  - Autor/credito: La guarda del angel
+  - Licencia: CC BY-SA 4.0

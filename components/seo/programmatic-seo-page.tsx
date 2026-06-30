@@ -17,6 +17,7 @@ import { buttonVariants } from "@/components/ui/button"
 import type { ProgrammaticSeoPage } from "@/lib/programmatic-seo"
 import { absoluteProgrammaticUrl } from "@/lib/programmatic-seo"
 import { modelInsightForPath } from "@/lib/model-seo-insights"
+import { breadcrumbJsonLd } from "@/lib/seo-jsonld"
 import { BRAND } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
@@ -28,6 +29,12 @@ export function ProgrammaticSeoPageView({
   page: ProgrammaticSeoPage
 }) {
   const modelInsight = modelInsightForPath(page.path)
+  const breadcrumbItems = [
+    { label: "Cumbreva", href: "/" },
+    ...(page.group === "route" ? [{ label: "Rutas" }] : []),
+    ...(page.group === "model" ? [{ label: "Modelos" }] : []),
+    { label: page.title, href: page.path },
+  ]
   const jsonLd = [
     {
       "@context": "https://schema.org",
@@ -54,6 +61,36 @@ export function ProgrammaticSeoPageView({
         },
       })),
     },
+    breadcrumbJsonLd(breadcrumbItems),
+    ...(page.group === "route"
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: page.title,
+            description: page.description,
+            image: absoluteProgrammaticUrl(page.heroImage),
+            url: absoluteProgrammaticUrl(page.path),
+            inLanguage: "es-CO",
+            author: {
+              "@type": "Organization",
+              name: BRAND.name,
+            },
+            publisher: {
+              "@type": "Organization",
+              name: BRAND.name,
+              logo: {
+                "@type": "ImageObject",
+                url: absoluteProgrammaticUrl("/android-chrome-512x512.png"),
+              },
+            },
+            articleSection: "Rutas para carros electricos",
+            abstract:
+              "Informacion estimada para planear una ruta electrica. La distancia, el consumo, la carga recomendada y los riesgos pueden cambiar segun origen exacto, modelo del vehiculo, bateria, clima, trafico y disponibilidad de carga.",
+            dateModified: new Date().toISOString(),
+          },
+        ]
+      : []),
   ]
 
   return (
@@ -125,7 +162,20 @@ export function ProgrammaticSeoPageView({
                 className="aspect-[4/3] w-full object-cover"
               />
               <figcaption className="border-t border-border/70 p-4 text-sm leading-6 text-muted-foreground">
-                {page.intro.body}
+                <span>{page.intro.body}</span>
+                {page.imageCredit ? (
+                  <span className="mt-3 block text-xs text-muted-foreground/70">
+                    Imagen:{" "}
+                    <a
+                      href={page.imageCredit.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      {page.imageCredit.label}
+                    </a>
+                  </span>
+                ) : null}
               </figcaption>
             </figure>
           </div>

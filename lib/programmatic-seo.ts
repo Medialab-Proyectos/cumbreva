@@ -10,6 +10,10 @@ export type ProgrammaticSeoPage = {
   lead: string
   heroImage: string
   heroAlt: string
+  imageCredit?: {
+    label: string
+    href: string
+  }
   primaryCta: {
     label: string
     href: string
@@ -540,7 +544,7 @@ export const routeSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Ruta Bogota - Girardot",
     h1: "Bogota a Girardot en electrico: la ida baja, el regreso cobra",
     lead: "Esta ruta parece facil por distancia, pero el cambio de altura entre la Sabana y el valle del Magdalena hace que la ida y el regreso se sientan muy distintos en bateria.",
-    heroImage: "/hero-route.png",
+    heroImage: "/seo-assets/places/girardot.jpg",
     heroAlt: "Ruta Bogota Girardot en carro electrico",
     primaryCta: {
       label: "Calcular esta ruta",
@@ -633,7 +637,7 @@ export const routeSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Ruta Bogota - Villavicencio",
     h1: "Bogota a Villavicencio: la bajada ayuda, la via exige respeto",
     lead: "La distancia no es enorme, pero la ruta tiene pendiente, tuneles, clima variable y cierres posibles. En electrico, el plan debe incluir bateria para llegar y margen para cualquier cambio.",
-    heroImage: "/hero-person.png",
+    heroImage: "/seo-assets/places/villavicencio.jpg",
     heroAlt: "Ruta Bogota Villavicencio en carro electrico",
     primaryCta: {
       label: "Calcular esta ruta",
@@ -726,7 +730,7 @@ export const routeSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Ruta Bogota - Medellin",
     h1: "Bogota a Medellin en electrico no se improvisa",
     lead: "Esta es una ruta para planear por tramos. La distancia, las montanas, el trafico pesado y las paradas hacen que la pregunta no sea si el carro es bueno, sino si el plan esta bien armado.",
-    heroImage: "/hero-route.png",
+    heroImage: "/seo-assets/places/medellin.jpg",
     heroAlt: "Ruta Bogota Medellin en carro electrico",
     primaryCta: {
       label: "Calcular esta ruta",
@@ -819,7 +823,7 @@ export const routeSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Ruta Medellin - Eje Cafetero",
     h1: "Medellin al Eje Cafetero: una ruta bonita que pide margen",
     lead: "Entre Antioquia y el Eje Cafetero hay montana, curvas, clima y destinos posibles. El plan cambia si vas a Manizales, Pereira, Armenia o a un municipio cercano.",
-    heroImage: "/lifestyle-charging.png",
+    heroImage: "/seo-assets/places/eje-cafetero.jpg",
     heroAlt: "Ruta Medellin Eje Cafetero en carro electrico",
     primaryCta: {
       label: "Calcular esta ruta",
@@ -912,7 +916,7 @@ export const routeSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Ruta Cali - Popayan",
     h1: "Cali a Popayan: distancia corta, subida que se siente",
     lead: "La ruta no parece larga, pero Popayan esta mas alto y el consumo puede cambiar si sales con calor, trafico o poco margen.",
-    heroImage: "/hero-route.png",
+    heroImage: "/seo-assets/places/popayan.jpg",
     heroAlt: "Ruta Cali Popayan en carro electrico",
     primaryCta: {
       label: "Calcular esta ruta",
@@ -1008,7 +1012,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "BYD Yuan Up",
     h1: "BYD Yuan Up: no mires solo el rango, calcula tu ruta",
     lead: "El Yuan Up puede ser muy atractivo para ciudad y viajes cercanos, pero la autonomia real cambia cuando sales a carretera, subes montana o llevas el carro cargado.",
-    heroImage: "/logos/2b84e07f-fff1-48b5-b739-fb6f680fb312.png",
+    heroImage: "/seo-assets/vehicles/byd-yuan-up.jpg",
     heroAlt: "BYD Yuan Up autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi Yuan Up",
@@ -1084,7 +1088,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "BYD Seagull",
     h1: "BYD Seagull: perfecto para ciudad, calcula bien la carretera",
     lead: "El Seagull tiene sentido para uso urbano y trayectos diarios, pero si lo llevas a carretera colombiana conviene revisar la ruta antes de confiarse.",
-    heroImage: "/logos/2b84e07f-fff1-48b5-b739-fb6f680fb312.png",
+    heroImage: "/seo-assets/vehicles/byd-seagull.jpg",
     heroAlt: "BYD Seagull autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi Seagull",
@@ -1160,7 +1164,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Volvo EX30",
     h1: "Volvo EX30: potencia y rango, pero la montana tambien cuenta",
     lead: "El EX30 puede tener muy buen desempeno, pero en Colombia la autonomia real se decide en la ruta: velocidad, desnivel, clima y como uses esa potencia.",
-    heroImage: "/logos/volvo.svg",
+    heroImage: "/seo-assets/vehicles/volvo-ex30.jpg",
     heroAlt: "Volvo EX30 autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi EX30",
@@ -1236,7 +1240,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Kia EV5",
     h1: "Kia EV5: espacio para viajar, autonomia para calcular",
     lead: "Un SUV electrico familiar puede ser ideal para viajes, pero tambien carga pasajeros, equipaje y expectativas. Antes de salir, revisa si llegas con margen.",
-    heroImage: "/logos/kia.svg",
+    heroImage: "/seo-assets/vehicles/kia-ev5.jpg",
     heroAlt: "Kia EV5 autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi EV5",
@@ -1312,7 +1316,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "MG4",
     h1: "MG4: autonomia atractiva, margen real por calcular",
     lead: "El MG4 combina precio, desempeno y autonomia interesante. Pero como todo electrico, la cifra que importa es la de tu ruta real.",
-    heroImage: "/logos/mg.svg",
+    heroImage: "/seo-assets/vehicles/mg4.jpg",
     heroAlt: "MG4 autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi MG4",
@@ -1388,7 +1392,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Tesla Model Y",
     h1: "Tesla Model Y: mucho rango, pero igual conviene calcular",
     lead: "El Model Y puede hacer viajes largos con buena planeacion, pero Colombia no es plana y la red de carga no siempre se comporta como en otros mercados.",
-    heroImage: "/logos/tesla.svg",
+    heroImage: "/seo-assets/vehicles/tesla-model-y.jpg",
     heroAlt: "Tesla Model Y autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi Model Y",
@@ -1464,7 +1468,7 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
     eyebrow: "Renault Kwid E-Tech",
     h1: "Kwid E-Tech: urbano, economico y mejor cuando calculas la salida",
     lead: "El Kwid E-Tech tiene mucho sentido para ciudad. Para carretera o trayectos fuera de la rutina, la clave es no pedirle una autonomia que no corresponde al plan.",
-    heroImage: "/logos/renault.svg",
+    heroImage: "/seo-assets/vehicles/renault-kwid.jpg",
     heroAlt: "Renault Kwid E-Tech autonomia Colombia",
     primaryCta: {
       label: "Calcular con mi Kwid",
@@ -1533,11 +1537,68 @@ export const modelSeoPages: ProgrammaticSeoPage[] = [
   },
 ]
 
+const imageCreditsByPath: Record<
+  string,
+  { label: string; href: string }
+> = {
+  "/rutas/bogota-girardot-carro-electrico": {
+    label: "Jimmy Gomez N / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Rio_Magdalena,_Girardot_Colombia._-_panoramio.jpg",
+  },
+  "/rutas/bogota-villavicencio-carro-electrico": {
+    label: "CarlosE Duarte / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Villavicencio,_Meta,_Colombia_-_panoramio_(7).jpg",
+  },
+  "/rutas/bogota-medellin-carro-electrico": {
+    label: "I.D. R.J. / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:City_of_Medellin.jpg",
+  },
+  "/rutas/medellin-eje-cafetero-carro-electrico": {
+    label: "Triangulo del Cafe Travel / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Cafetales,_en_Colombia.jpg",
+  },
+  "/rutas/cali-popayan-carro-electrico": {
+    label: "La guarda del angel / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Popayan.jpg",
+  },
+  "/modelos/byd-yuan-up-autonomia-colombia": {
+    label: "JustAnotherCarDesigner / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:BYD_Yuan_Up_001_(cropped).jpg",
+  },
+  "/modelos/byd-seagull-autonomia-colombia": {
+    label: "User3204 / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:2023_BYD_Seagull_(front).jpg",
+  },
+  "/modelos/volvo-ex30-autonomia-colombia": {
+    label: "Alexander-93 / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Volvo_EX30_DSC_6073.jpg",
+  },
+  "/modelos/kia-ev5-autonomia-colombia": {
+    label: "John kwame westafrica / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Kia_EV5_IMG01.jpg",
+  },
+  "/modelos/mg4-autonomia-colombia": {
+    label: "Alexander Migl / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:MG4_EV_DSC_7236.jpg",
+  },
+  "/modelos/tesla-model-y-autonomia-colombia": {
+    label: "Alexander Migl / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Tesla_Model_Y_1X7A6211.jpg",
+  },
+  "/modelos/renault-kwid-e-tech-autonomia-colombia": {
+    label: "Autosdeprimera / Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:2023_Renault_Kwid_Iconic_(Colombia)_front_view_01.png",
+  },
+}
+
 export const programmaticSeoPages = [
   ...rootSeoPages,
   ...routeSeoPages,
   ...modelSeoPages,
-]
+].map((page) => ({
+  ...page,
+  imageCredit: imageCreditsByPath[page.path],
+}))
 
 export const programmaticSeoPageByPath = new Map(
   programmaticSeoPages.map((page) => [page.path, page]),
