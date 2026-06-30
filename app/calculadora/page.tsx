@@ -7,9 +7,9 @@ import { PwaInstallButton } from "@/components/pwa-install-button"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata: Metadata = {
-  title: "Calculadora de autonomía real para carros eléctricos",
+  title: "Calculadora de autonomia real para carro electrico",
   description:
-    "Calcula si la batería de tu carro eléctrico realmente alcanza entre dos puntos en Colombia, corrigiendo por el desnivel real del terreno, clima por altitud y regeneración en bajadas.",
+    "Calcula si te alcanza la bateria de tu carro electrico entre dos puntos en Colombia y planea la ruta con carga segun desnivel real, clima por altitud y regeneracion en bajadas.",
   alternates: { canonical: "/calculadora" },
 }
 

@@ -8,7 +8,7 @@ const benefits = ["Acceso anticipado gratis", "Sin permanencia"]
 
 export function Hero() {
   return (
-    <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden">
+    <section className="relative isolate flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
       <Image
         src="/hero-route.png"
         alt="Vehiculo electrico recorriendo una carretera con su ruta de carga trazada por Cumbreva"
@@ -20,8 +20,8 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
 
-      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1fr_auto] lg:gap-4">
-        <div className="max-w-2xl">
+      <div className="relative mx-auto grid min-h-[calc(100svh-4rem)] w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1fr_auto] lg:gap-4">
+        <div className="flex max-w-2xl flex-col justify-center self-center">
           <div className="flex items-center gap-2">
             <span
               className="flex size-2 rounded-full bg-primary shadow-[0_0_12px_2px] shadow-primary/60"
@@ -36,8 +36,13 @@ export function Hero() {
 
           <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
             Cumbreva es <span className="font-semibold text-foreground">tu copiloto electrico</span>:
-            bateria, autonomia real, rutas con carga y documentos del vehiculo, todo en
-            un solo lugar. Ideal para quien busca una app para carro electrico en Colombia.
+            revisa si te alcanza la bateria, planea una ruta con carga y encuentra donde cargar tu carro electrico
+            en Colombia desde una sola app.
+          </p>
+
+          <p className="mt-3 max-w-xl text-sm font-medium text-foreground/80 sm:text-base">
+            Para quienes buscan respuestas concretas: cuanto dura la bateria, donde cargar y como planear una ruta
+            larga sin adivinar.
           </p>
 
           <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">

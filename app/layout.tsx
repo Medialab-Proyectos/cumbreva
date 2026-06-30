@@ -18,9 +18,9 @@ const oswald = Oswald({
   weight: ["500", "600", "700"],
 })
 
-const title = "Cumbreva | App para carro electrico en Colombia"
+const title = "Cumbreva | Calculadora y app para carro electrico en Colombia"
 const description =
-  "Cumbreva es una app para carro electrico en Colombia: bateria, autonomia real, rutas con carga, electrolineras y documentos del vehiculo en un solo lugar. Unete a la lista de espera gratis."
+  "Cumbreva te ayuda a saber si te alcanza la bateria, donde cargar tu carro electrico y como planear rutas con carga en Colombia. Calculadora de autonomia real, electrolineras y control del vehiculo en una sola app."
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -34,10 +34,14 @@ export const metadata: Metadata = {
   keywords: [
     "Cumbreva",
     "app carro electrico",
+    "calculadora carro electrico",
+    "calculadora autonomia carro electrico",
     "app vehiculo electrico Colombia",
     "copiloto electrico",
     "autonomia carro electrico",
     "autonomia real vehiculo electrico",
+    "me alcanza la bateria",
+    "como planear ruta carro electrico",
     "donde cargar carro electrico",
     "rutas de carga",
     "electrolineras Colombia",

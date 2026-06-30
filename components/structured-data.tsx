@@ -11,6 +11,7 @@ export function StructuredData() {
         "@id": `${SITE_URL}/#organization`,
         name: BRAND.name,
         legalName: BRAND.company,
+        alternateName: "Cumbreva calculadora de autonomia",
         url: SITE_URL,
         logo: `${SITE_URL}/android-chrome-512x512.png`,
         email: BRAND.email,
@@ -56,6 +57,8 @@ export function StructuredData() {
           "autonomia real de carro electrico",
           "estaciones de carga en Colombia",
           "bateria de vehiculo electrico",
+          "donde cargar carro electrico",
+          "como planear una ruta en carro electrico",
         ],
       },
       {
@@ -72,7 +75,7 @@ export function StructuredData() {
         featureList: [
           "Estado de bateria y autonomia real",
           "Planeacion de rutas con paradas de carga",
-          "Mapa de electrolineras",
+          "Mapa de electrolineras y puntos para cargar",
           "Recomendaciones de carga con inteligencia artificial",
           "Documentos del vehiculo en un solo lugar",
         ],

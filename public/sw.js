@@ -1,7 +1,7 @@
 /* Service worker de Cumbreva — PWA instalable.
    Cachea el "shell" de la app para carga instantánea; nunca cachea las APIs
    (cuota, OTP, rutas) que siempre necesitan red y datos frescos. */
-const CACHE = "cumbreva-v1"
+const CACHE = "cumbreva-v2"
 const SHELL = ["/", "/calculadora", "/cuenta", "/manifest.webmanifest"]
 
 self.addEventListener("install", (e) => {
@@ -32,7 +32,7 @@ self.addEventListener("fetch", (e) => {
           caches.open(CACHE).then((c) => c.put(request, copy)).catch(() => {})
           return res
         })
-        .catch(() => caches.match(request).then((r) => r || caches.match("/"))),
+        .catch(() => caches.match(request).then((r) => r || caches.match("/calculadora"))),
     )
     return
   }
