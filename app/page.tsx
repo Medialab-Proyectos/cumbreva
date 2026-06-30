@@ -6,6 +6,7 @@ import { Features } from "@/components/features"
 import { Hero } from "@/components/hero"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
+import { StandaloneHomeRedirect } from "@/components/standalone-home-redirect"
 import { StatsBand } from "@/components/stats-band"
 import { StoreTeaser } from "@/components/store-teaser"
 import { StructuredData } from "@/components/structured-data"
@@ -15,6 +16,7 @@ import { WhatsAppBanner } from "@/components/whatsapp-banner"
 export default function Page() {
   return (
     <div className="min-h-dvh bg-background">
+      <StandaloneHomeRedirect />
       <StructuredData />
       <SiteHeader />
       <main className="pb-24">

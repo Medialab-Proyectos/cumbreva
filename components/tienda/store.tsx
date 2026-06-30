@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, ChevronLeft, ChevronRight, Plus, ShoppingCart } from "lucide-react"
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { PRODUCTOS, formatoCOP, type Producto } from "@/lib/store-products"
@@ -31,11 +31,11 @@ export function Store() {
         </Button>
       </header>
 
-      <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-400/10 px-3.5 py-2.5 text-xs leading-relaxed text-amber-300">
-        <span className="mt-1 size-2 shrink-0 rounded-full bg-amber-400" />
+      <div className="mb-6 flex items-start gap-2 rounded-xl border border-primary/30 bg-primary/10 px-3.5 py-2.5 text-xs leading-relaxed text-primary">
+        <span className="mt-1 size-2 shrink-0 rounded-full bg-primary" />
         <span>
-          Por ahora la tienda de Cumbreva funciona <strong>solo para Colombia</strong> como comercio electrónico. El pago
-          en línea está en <strong>demo</strong> (no se cobra nada todavía).
+          Por ahora la tienda de Cumbreva funciona <strong>solo para Colombia</strong>. Estos son los productos que vienen
+          en camino: muy <strong>pronto</strong> podrás comprarlos.
         </span>
       </div>
 
@@ -49,24 +49,10 @@ export function Store() {
 }
 
 function ProductoCard({ producto }: { producto: Producto }) {
-  const { add } = useCart()
   const [vista, setVista] = useState(0)
-  const [talla, setTalla] = useState<string | null>(null)
-  const [agregado, setAgregado] = useState(false)
-  const [pideTalla, setPideTalla] = useState(false)
 
   const galeria = producto.galeria.length ? producto.galeria : [producto.gradiente]
   const rotar = (dir: number) => setVista((v) => (v + dir + galeria.length) % galeria.length)
-
-  const onAgregar = () => {
-    if (producto.tallas && !talla) {
-      setPideTalla(true)
-      return
-    }
-    add(producto.id, talla ?? undefined)
-    setAgregado(true)
-    setTimeout(() => setAgregado(false), 1400)
-  }
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40">
@@ -107,32 +93,25 @@ function ProductoCard({ producto }: { producto: Producto }) {
 
         {producto.tallas && (
           <div className="mt-3">
-            <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Talla</div>
+            <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Tallas</div>
             <div className="flex flex-wrap gap-1.5">
               {producto.tallas.map((t) => (
-                <button
+                <span
                   key={t}
-                  onClick={() => { setTalla(t); setPideTalla(false) }}
-                  className={cn(
-                    "flex h-8 min-w-8 items-center justify-center rounded-md border px-2 text-xs font-semibold transition-colors",
-                    talla === t
-                      ? "border-primary bg-primary/15 text-primary"
-                      : "border-border text-muted-foreground hover:text-foreground",
-                  )}
+                  className="flex h-8 min-w-8 items-center justify-center rounded-md border border-border px-2 text-xs font-semibold text-muted-foreground"
                 >
                   {t}
-                </button>
+                </span>
               ))}
             </div>
-            {pideTalla && <p className="mt-1.5 text-[11px] text-amber-400">Elige una talla.</p>}
           </div>
         )}
 
         <div className="mt-3 flex items-center justify-between gap-2">
           <span className="text-base font-bold text-foreground">{formatoCOP(producto.precio)}</span>
-          <Button size="sm" onClick={onAgregar} className="font-semibold">
-            {agregado ? <><Check className="size-3.5" /> Agregado</> : <><Plus className="size-3.5" /> Agregar</>}
-          </Button>
+          <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+            Próximamente
+          </span>
         </div>
       </div>
     </div>

@@ -61,10 +61,15 @@ export function Hero() {
             >
               <Mountain className="size-5 text-primary" />
               Calcula tu ruta gratis
+              <span aria-hidden className="ml-0.5 align-super text-[0.7em] text-primary">*</span>
             </OpenCalculatorButton>
           </div>
 
-          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 sm:mt-8">
+          <p className="mt-3 max-w-md text-[11px] leading-relaxed text-muted-foreground/70">
+            *Prueba anticipada del cálculo de rutas (versión demo), basada en elevación y terreno. En evaluación.
+          </p>
+
+          <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 sm:mt-6">
             {benefits.map((benefit) => (
               <li
                 key={benefit}
