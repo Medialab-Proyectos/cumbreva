@@ -27,16 +27,16 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          <CartButton />
           <a
             href="#lista-espera"
             className={cn(
               buttonVariants(),
-              "h-10 rounded-full px-5 text-sm font-semibold hover:bg-primary/90",
+              "hidden h-10 rounded-full px-5 text-sm font-semibold hover:bg-primary/90 sm:inline-flex",
             )}
           >
             Unirme a la lista
           </a>
+          <CartButton />
         </div>
       </div>
     </header>

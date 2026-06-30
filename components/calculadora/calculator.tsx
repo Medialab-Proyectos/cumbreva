@@ -300,7 +300,7 @@ export function Calculator() {
             <span className="text-[11px] text-muted-foreground">Autonomía real</span>
           </div>
         </div>
-        <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
+        {registrado && <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />}
       </header>
 
       {/* Pestañas de la app (tras ingresar el correo) */}

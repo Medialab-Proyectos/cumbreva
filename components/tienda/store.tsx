@@ -30,8 +30,12 @@ export function Store() {
         </Button>
       </header>
 
-      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-xs text-amber-300">
-        <span className="size-2 rounded-full bg-amber-400" /> Demo — el pago aún no está activo. Envíos solo dentro de Colombia.
+      <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-400/40 bg-amber-400/10 px-3.5 py-2.5 text-xs leading-relaxed text-amber-300">
+        <span className="mt-1 size-2 shrink-0 rounded-full bg-amber-400" />
+        <span>
+          Por ahora la tienda de Cumbreva funciona <strong>solo para Colombia</strong> como comercio electrónico. El pago
+          en línea está en <strong>demo</strong> (no se cobra nada todavía).
+        </span>
       </div>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

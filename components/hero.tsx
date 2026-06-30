@@ -8,7 +8,7 @@ const benefits = ["Acceso anticipado gratis", "Sin permanencia"]
 
 export function Hero() {
   return (
-    <section className="relative isolate flex min-h-[88svh] items-start overflow-hidden sm:items-center">
+    <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden">
       <Image
         src="/hero-route.png"
         alt="Vehiculo electrico recorriendo una carretera con su ruta de carga trazada por Cumbreva"
@@ -20,7 +20,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
 
-      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-28 pt-10 sm:px-8 sm:py-24 lg:grid-cols-[1fr_auto] lg:gap-4">
+      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1fr_auto] lg:gap-4">
         <div className="max-w-2xl">
           <div className="flex items-center gap-2">
             <span
@@ -55,7 +55,7 @@ export function Hero() {
               )}
             >
               <Mountain className="size-5 text-primary" />
-              Probar la calculadora gratis
+              Calcula tu ruta gratis
             </OpenCalculatorButton>
           </div>
 
