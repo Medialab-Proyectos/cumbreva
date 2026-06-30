@@ -1,6 +1,7 @@
 "use client"
 
-import { Minus, Plus, ShoppingCart } from "lucide-react"
+import { useState } from "react"
+import { Check, ChevronLeft, ChevronRight, Plus, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { PRODUCTOS, formatoCOP, type Producto } from "@/lib/store-products"
@@ -48,38 +49,90 @@ export function Store() {
 }
 
 function ProductoCard({ producto }: { producto: Producto }) {
-  const { add, sub, qtyOf } = useCart()
-  const qty = qtyOf(producto.id)
+  const { add } = useCart()
+  const [vista, setVista] = useState(0)
+  const [talla, setTalla] = useState<string | null>(null)
+  const [agregado, setAgregado] = useState(false)
+  const [pideTalla, setPideTalla] = useState(false)
+
+  const galeria = producto.galeria.length ? producto.galeria : [producto.gradiente]
+  const rotar = (dir: number) => setVista((v) => (v + dir + galeria.length) % galeria.length)
+
+  const onAgregar = () => {
+    if (producto.tallas && !talla) {
+      setPideTalla(true)
+      return
+    }
+    add(producto.id, talla ?? undefined)
+    setAgregado(true)
+    setTimeout(() => setAgregado(false), 1400)
+  }
+
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40">
-      <div className={cn("relative flex aspect-square items-center justify-center bg-gradient-to-br", producto.gradiente)}>
+      <div className={cn("relative flex aspect-square items-center justify-center bg-gradient-to-br transition-colors", galeria[vista])}>
         <span className="text-6xl drop-shadow-lg transition-transform group-hover:scale-110">{producto.emoji}</span>
         {producto.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2.5 py-1 text-[11px] font-semibold text-primary backdrop-blur">
             {producto.badge}
           </span>
         )}
+        {galeria.length > 1 && (
+          <>
+            <button
+              onClick={() => rotar(-1)}
+              aria-label="Imagen anterior"
+              className="absolute left-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-background/70 text-foreground backdrop-blur transition-colors hover:bg-background"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <button
+              onClick={() => rotar(1)}
+              aria-label="Imagen siguiente"
+              className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-background/70 text-foreground backdrop-blur transition-colors hover:bg-background"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+            <div className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5">
+              {galeria.map((_, i) => (
+                <span key={i} className={cn("size-1.5 rounded-full transition-colors", i === vista ? "bg-primary" : "bg-foreground/30")} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="text-sm font-semibold text-foreground">{producto.nombre}</h3>
         <p className="mt-1 flex-1 text-xs leading-relaxed text-muted-foreground">{producto.descripcion}</p>
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-base font-bold text-foreground">{formatoCOP(producto.precio)}</span>
-          {qty === 0 ? (
-            <Button size="sm" onClick={() => add(producto.id)} className="font-semibold">
-              <Plus className="size-3.5" /> Agregar
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <button onClick={() => sub(producto.id)} className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted">
-                <Minus className="size-3.5" />
-              </button>
-              <span className="w-4 text-center text-sm font-medium">{qty}</span>
-              <button onClick={() => add(producto.id)} className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted">
-                <Plus className="size-3.5" />
-              </button>
+
+        {producto.tallas && (
+          <div className="mt-3">
+            <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Talla</div>
+            <div className="flex flex-wrap gap-1.5">
+              {producto.tallas.map((t) => (
+                <button
+                  key={t}
+                  onClick={() => { setTalla(t); setPideTalla(false) }}
+                  className={cn(
+                    "flex h-8 min-w-8 items-center justify-center rounded-md border px-2 text-xs font-semibold transition-colors",
+                    talla === t
+                      ? "border-primary bg-primary/15 text-primary"
+                      : "border-border text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {t}
+                </button>
+              ))}
             </div>
-          )}
+            {pideTalla && <p className="mt-1.5 text-[11px] text-amber-400">Elige una talla.</p>}
+          </div>
+        )}
+
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <span className="text-base font-bold text-foreground">{formatoCOP(producto.precio)}</span>
+          <Button size="sm" onClick={onAgregar} className="font-semibold">
+            {agregado ? <><Check className="size-3.5" /> Agregado</> : <><Plus className="size-3.5" /> Agregar</>}
+          </Button>
         </div>
       </div>
     </div>

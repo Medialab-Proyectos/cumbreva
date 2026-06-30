@@ -10,7 +10,7 @@ import { useCart } from "@/components/tienda/cart-context"
 
 /** Panel global del carrito. Se monta una vez y se abre desde cualquier página. */
 export function CartDrawer() {
-  const { items, total, add, sub, remove, clear, open, setOpen } = useCart()
+  const { items, total, inc, dec, removeLine, clear, open, setOpen } = useCart()
   const [pagado, setPagado] = useState(false)
   const router = useRouter()
 
@@ -59,25 +59,27 @@ export function CartDrawer() {
           <>
             <div className="flex-1 overflow-y-auto p-5">
               <ul className="flex flex-col gap-3">
-                {items.map(({ producto, qty }) => (
-                  <li key={producto.id} className="flex items-center gap-3 rounded-xl border border-border bg-background/40 p-3">
+                {items.map(({ lineKey, producto, talla, qty }) => (
+                  <li key={lineKey} className="flex items-center gap-3 rounded-xl border border-border bg-background/40 p-3">
                     <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-xl", producto.gradiente)}>
                       {producto.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-foreground">{producto.nombre}</p>
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {producto.nombre}{talla ? <span className="text-muted-foreground"> · {talla}</span> : null}
+                      </p>
                       <p className="text-xs text-muted-foreground">{formatoCOP(producto.precio)}</p>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <button onClick={() => sub(producto.id)} className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted">
+                      <button onClick={() => dec(lineKey)} className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted">
                         <Minus className="size-3.5" />
                       </button>
                       <span className="w-5 text-center text-sm">{qty}</span>
-                      <button onClick={() => add(producto.id)} className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted">
+                      <button onClick={() => inc(lineKey)} className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted">
                         <Plus className="size-3.5" />
                       </button>
                     </div>
-                    <button onClick={() => remove(producto.id)} className="text-muted-foreground hover:text-destructive" aria-label="Quitar">
+                    <button onClick={() => removeLine(lineKey)} className="text-muted-foreground hover:text-destructive" aria-label="Quitar">
                       <Trash2 className="size-4" />
                     </button>
                   </li>
