@@ -1,9 +1,10 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ArrowLeft, ChevronDown, History, Loader2, MapPin, Zap } from "lucide-react"
+import { ArrowLeft, Check, ChevronDown, Copy, History, Loader2, MapPin, Share2, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { SITE_URL } from "@/lib/site"
 import {
   EV_CATALOG,
   deviceHash,
@@ -15,8 +16,8 @@ import { MapaRuta, MedidorBateria, PerfilSVG } from "@/components/calculadora/ba
 type Punto = { label: string; lat: number; lng: number; elev?: number }
 type Fase = "datos" | "yaregistrado" | "otp" | "ok"
 
-// Estilo "app": secciones livianas y campos abiertos (subrayado), no cajitas.
-const card = "rounded-2xl border border-border/50 bg-card/40 p-5 sm:p-7"
+// Estilo app: secciones abiertas, con separadores suaves en vez de cajas dentro de cajas.
+const card = "border-t border-border/70 py-5 sm:py-6"
 const inputBase =
   "w-full border-0 border-b-2 border-border bg-transparent px-0.5 py-2.5 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/45 focus:border-primary"
 
@@ -38,8 +39,10 @@ export function Calculator() {
   const [bateria, setBateria] = useState(100)
 
   const [cargando, setCargando] = useState(false)
+  const [sesionLista, setSesionLista] = useState(false)
   const [error, setError] = useState("")
   const [res, setRes] = useState<Resultado | null>(null)
+  const [shareState, setShareState] = useState<"idle" | "copied">("idle")
 
   // Cuota / registro
   const [registrado, setRegistrado] = useState(false)
@@ -83,14 +86,21 @@ export function Calculator() {
           setNombre(j.nombre || "")
         } else if (j.estado === "regresa_sin_registro") {
           setRegresaSinRegistro(true)
+          setFase("yaregistrado")
           if (j.emailSugerido) setEmail(j.emailSugerido)
         }
         setLimite(j.limite ?? 2)
         setRestantes(j.restantes ?? 0)
+        setSesionLista(true)
       } catch {
         /* sin BD: cae a límite anónimo por defecto */
       }
     })()
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => setSesionLista(true), 1200)
+    return () => clearTimeout(t)
   }, [])
 
   // Sincroniza specs al cambiar de modelo
@@ -287,41 +297,81 @@ export function Calculator() {
         ? "Cuota de hoy agotada · vuelve mañana"
         : "Calcular autonomía real"
 
+  const compartirRegistro = useCallback(async () => {
+    const url = `${SITE_URL}/calculadora`
+    const text = "Registrate en Cumbreva y calcula la autonomia real de tu carro electrico."
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Cumbreva", text, url })
+        return
+      }
+      await navigator.clipboard.writeText(url)
+      setShareState("copied")
+      setTimeout(() => setShareState("idle"), 1800)
+    } catch {
+      try {
+        await navigator.clipboard.writeText(url)
+        setShareState("copied")
+        setTimeout(() => setShareState("idle"), 1800)
+      } catch {}
+    }
+  }, [])
+
+  if (!sesionLista) {
+    return <SessionSplash />
+  }
+
+  if (!registrado) {
+    return (
+      <div className="mx-auto w-full max-w-md">
+        <AccessGate
+          fase={fase}
+          email={email}
+          otpInput={otpInput}
+          codigoDemo={codigoDemo}
+          errReg={errReg}
+          enviando={enviando}
+          reenvioEn={reenvioEn}
+          onEmail={setEmail}
+          onOtp={setOtpInput}
+          onPedirCodigo={pedirCodigo}
+          onVerificar={verificarOTP}
+          onFase={(f) => {
+            setErrReg("")
+            setFase(f)
+          }}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto w-full max-w-3xl">
       {/* Encabezado tipo app: logo + cuota */}
-      <header className="mb-6 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_0_20px_-4px] shadow-primary/60">
-            <Zap className="size-5 fill-current" />
-          </span>
-          <div className="leading-none">
-            <span className="font-heading block text-lg font-bold uppercase tracking-tight text-foreground">Cumbreva</span>
-            <span className="text-[11px] text-muted-foreground">Autonomía real</span>
-          </div>
+      <header className="mb-5 flex items-end justify-between gap-3">
+        <div>
+          <Eyebrow>Autonomia real</Eyebrow>
+          <h1 className="font-heading text-2xl font-bold uppercase leading-none text-foreground">Planea tu ruta</h1>
         </div>
-        {registrado && <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />}
+        <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
       </header>
 
-      {/* Pestañas de la app (tras ingresar el correo) */}
-      {registrado && (
-        <div className="mb-5 grid grid-cols-2 gap-1 rounded-2xl border border-border bg-card/40 p-1">
-          <button
-            onClick={() => setTab("calcular")}
-            className={cn("flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-colors", tab === "calcular" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
-          >
-            <Zap className="size-4" /> Calcular
-          </button>
-          <button
-            onClick={() => setTab("historial")}
-            className={cn("flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-colors", tab === "historial" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
-          >
-            <History className="size-4" /> Historial
-          </button>
-        </div>
-      )}
+      <div className="sticky top-16 z-30 -mx-5 mb-5 grid grid-cols-2 gap-1 border-b border-border/60 bg-background/92 px-5 py-2 backdrop-blur-xl sm:-mx-8 sm:px-8">
+        <button
+          onClick={() => setTab("calcular")}
+          className={cn("flex h-10 items-center justify-center gap-2 rounded-lg text-sm font-semibold transition-colors", tab === "calcular" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground")}
+        >
+          <Zap className="size-4" /> Calcular
+        </button>
+        <button
+          onClick={() => setTab("historial")}
+          className={cn("flex h-10 items-center justify-center gap-2 rounded-lg text-sm font-semibold transition-colors", tab === "historial" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground")}
+        >
+          <History className="size-4" /> Historial
+        </button>
+      </div>
 
-      {registrado && tab === "historial" ? (
+      {tab === "historial" ? (
         <HistorialView items={histItems} cargando={histCargando} onIr={() => setTab("calcular")} />
       ) : res ? (
         /* ---- Vista de resultado (como pantalla de app) ---- */
@@ -332,59 +382,71 @@ export function Calculator() {
           >
             <ArrowLeft className="size-4" /> Nueva búsqueda
           </button>
-          <section className={cn("rounded-2xl border bg-card p-5 sm:p-6", res.alcanza ? "border-border" : "border-destructive/50")}>
+          <section className="space-y-5">
             <div className="mb-2 text-xs font-medium text-muted-foreground">
-              {origen.split(",")[0]} → {destino.split(",")[0]}
+              {origen.split(",")[0]}{" -> "}{destino.split(",")[0]}
             </div>
-            <div className={cn("mb-4 flex items-center gap-2 text-base font-bold", res.alcanza ? "text-primary" : "text-destructive")}>
-              <span className="text-xl">{res.alcanza ? "✓" : "⚠"}</span>
+            <div className={cn("flex items-start gap-3 border-b border-border/70 pb-4 text-base font-bold", res.alcanza ? "text-primary" : "text-destructive")}>
+              <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-current/10">
+                {res.alcanza ? <Check className="size-4" /> : "!"}
+              </span>
+              <span>
               {res.alcanza
                 ? `Alcanzas con ${Math.round(res.pctLlegada)}% de margen`
-                : `No alcanza — te quedarías a ${Math.round(res.distKm - res.kmAlcance)} km del destino`}
+                : `No alcanza: te quedarias a ${Math.round(res.distKm - res.kmAlcance)} km del destino`}
+              </span>
             </div>
 
-            <MedidorBateria pct={res.pctLlegada} alcanza={res.alcanza} kmAlcance={res.kmAlcance} distKm={res.distKm} />
-
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Stat label="Distancia real" value={`${Math.round(res.distKm)} km`} sub={`${Math.round(res.durMin)} min en vía`} />
-              <Stat label="Autonomía real" value={`${Math.round(res.kmAlcance)} km`} sub={`con ${bateria}% de carga`} />
-              <Stat label="Consumo corregido" value={`${Math.round(res.consumoReal)}`} sub={`Wh/km · +${Math.round(res.penaliz)}% vs catálogo`} />
-              <Stat label="Desnivel acumulado" value={`+${Math.round(res.perfil.asc)} m`} sub={`baja ${Math.round(res.perfil.desc)} m`} />
-            </div>
-
-            <div className="mt-5">
-              <div className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                A dónde se va la energía · vel. media ~{Math.round(res.velMedia)} km/h
-              </div>
-              <Desglose res={res} />
-            </div>
-
-            <div className="mt-5">
+            <div>
               <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Mapa de la ruta · {Math.round(res.distKm)} km
               </div>
               <MapaRuta coords={res.coords} distKm={res.distKm} alcanza={res.alcanza} kmAlcance={res.kmAlcance} origen={origen} destino={destino} />
             </div>
 
-            <div className="mt-5">
+            <MedidorBateria pct={res.pctLlegada} alcanza={res.alcanza} kmAlcance={res.kmAlcance} distKm={res.distKm} />
+
+            <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0">
+              <Stat label="Distancia real" value={`${Math.round(res.distKm)} km`} sub={`${Math.round(res.durMin)} min en via`} />
+              <Stat label="Autonomia real" value={`${Math.round(res.kmAlcance)} km`} sub={`con ${bateria}% de carga`} />
+              <Stat label="Consumo corregido" value={`${Math.round(res.consumoReal)}`} sub={`Wh/km · +${Math.round(res.penaliz)}% vs catalogo`} />
+              <Stat label="Desnivel acumulado" value={`+${Math.round(res.perfil.asc)} m`} sub={`baja ${Math.round(res.perfil.desc)} m`} />
+            </div>
+
+            <div className="border-t border-border/70 pt-5">
+              <div className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Energia estimada · vel. media ~{Math.round(res.velMedia)} km/h
+              </div>
+              <Desglose res={res} />
+            </div>
+
+            <div className="border-t border-border/70 pt-5">
               <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Perfil de elevación · {Math.round(res.perfil.min)}–{Math.round(res.perfil.max)} m
+                Perfil de elevacion · {Math.round(res.perfil.min)}-{Math.round(res.perfil.max)} m
               </div>
               <PerfilSVG coords={res.coords} />
             </div>
 
-            <p className="mt-4 text-xs leading-relaxed text-muted-foreground/70">
-              Estimación · datos de {res.fuente}. El consumo real también depende de velocidad, clima, aire acondicionado,
-              carga y estilo de conducción. Deja siempre un margen de seguridad antes de viajar.
+            <p className="border-t border-border/70 pt-4 text-xs leading-relaxed text-muted-foreground/70">
+              Estimacion con datos de {res.fuente}. El consumo real tambien depende de velocidad, clima, aire acondicionado,
+              carga y estilo de conduccion. Deja siempre un margen de seguridad antes de viajar.
             </p>
           </section>
-          <Button size="lg" onClick={() => setRes(null)} variant="outline" className="mt-4 h-12 w-full font-semibold">
-            Calcular otra ruta
-          </Button>
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/92 p-3 backdrop-blur-xl">
+            <div className="mx-auto flex max-w-3xl gap-2">
+              <Button size="lg" onClick={() => setRes(null)} variant="outline" className="h-12 flex-1 font-semibold">
+                Calcular otra ruta
+              </Button>
+              <Button size="lg" onClick={compartirRegistro} className="h-12 px-4 font-semibold" aria-label="Compartir registro">
+                {shareState === "copied" ? <Copy className="size-4" /> : <Share2 className="size-4" />}
+                <span className="hidden sm:inline">{shareState === "copied" ? "Link copiado" : "Compartir"}</span>
+              </Button>
+            </div>
+          </div>
         </div>
       ) : (
         /* ---- Vista de formulario (botón sticky abajo) ---- */
-        <>
+        <div className="pb-24">
           <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
             Calcula si tu batería <span className="text-foreground">realmente alcanza</span> entre dos puntos, corrigiendo
             por el terreno real de la ruta: pendiente, altitud y clima. Indica el origen, el destino y tu carga actual.
@@ -443,17 +505,19 @@ export function Calculator() {
           {error && <p className="mb-2 text-sm text-destructive">{error}</p>}
 
           {/* Botón Calcular — sticky en la parte baja (app) */}
-          <div className="sticky bottom-3 z-20 pt-2">
-            <Button
-              size="lg"
-              onClick={calcular}
-              disabled={cargando}
-              className="h-14 w-full rounded-2xl text-base font-semibold shadow-xl shadow-primary/25"
-            >
-              {cargando ? <><Loader2 className="size-4 animate-spin" /> {botonTexto}</> : botonTexto}
-            </Button>
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/92 p-3 backdrop-blur-xl">
+            <div className="mx-auto max-w-3xl">
+              <Button
+                size="lg"
+                onClick={calcular}
+                disabled={cargando}
+                className="h-14 w-full rounded-lg text-base font-semibold shadow-xl shadow-primary/25"
+              >
+                {cargando ? <><Loader2 className="size-4 animate-spin" /> {botonTexto}</> : botonTexto}
+              </Button>
+            </div>
           </div>
-        </>
+        </div>
       )}
 
       {/* Muro de registro */}
@@ -575,6 +639,133 @@ export function Calculator() {
 }
 
 // ---- Subcomponentes --------------------------------------------------------
+function SessionSplash() {
+  return (
+    <div className="flex min-h-[58dvh] flex-col items-center justify-center gap-4 text-center">
+      <BlackLogoMark className="size-24 animate-pulse" />
+      <div>
+        <div className="font-heading text-2xl font-bold uppercase leading-none text-foreground">Cumbreva</div>
+        <div className="mt-2 text-sm text-muted-foreground">Preparando tu sesión</div>
+      </div>
+    </div>
+  )
+}
+
+function AccessGate({
+  fase,
+  email,
+  otpInput,
+  codigoDemo,
+  errReg,
+  enviando,
+  reenvioEn,
+  onEmail,
+  onOtp,
+  onPedirCodigo,
+  onVerificar,
+  onFase,
+}: {
+  fase: Fase
+  email: string
+  otpInput: string
+  codigoDemo: string
+  errReg: string
+  enviando: boolean
+  reenvioEn: number
+  onEmail: (v: string) => void
+  onOtp: (v: string) => void
+  onPedirCodigo: () => void
+  onVerificar: () => void
+  onFase: (f: Fase) => void
+}) {
+  const esRegreso = fase === "yaregistrado"
+
+  return (
+    <section className="flex min-h-[calc(100dvh-9rem)] flex-col justify-center pb-10">
+      <BlackLogoMark className="mb-6 size-24" />
+
+      {(fase === "datos" || fase === "yaregistrado") && (
+        <>
+          <Eyebrow>{esRegreso ? "Bienvenido de vuelta" : "Iniciar sesion"}</Eyebrow>
+          <h1 className="font-heading text-4xl font-bold uppercase leading-none text-foreground">
+            {esRegreso ? "Recupera tu acceso" : "Entra a Cumbreva"}
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Ingresa tu correo para activar la calculadora, guardar historial y compartir rutas.
+          </p>
+          <div className="mt-8 flex flex-col gap-4">
+            <input
+              value={email}
+              onChange={(e) => onEmail(e.target.value)}
+              placeholder="tucorreo@ejemplo.com"
+              type="email"
+              inputMode="email"
+              onKeyDown={(e) => e.key === "Enter" && onPedirCodigo()}
+              className={inputBase}
+              autoFocus
+            />
+            {errReg && <p className="text-xs text-destructive">{errReg}</p>}
+            <Button size="lg" onClick={onPedirCodigo} disabled={enviando} className="h-12 font-semibold">
+              {enviando ? <><Loader2 className="size-4 animate-spin" /> Enviando codigo...</> : "Recibir codigo"}
+            </Button>
+            <button
+              onClick={() => onFase(esRegreso ? "datos" : "yaregistrado")}
+              disabled={enviando}
+              className="text-sm text-muted-foreground transition-colors hover:text-primary"
+            >
+              {esRegreso ? "Quiero registrarme con otro correo" : "Ya me registre antes"}
+            </button>
+          </div>
+        </>
+      )}
+
+      {fase === "otp" && (
+        <>
+          <Eyebrow>Codigo OTP</Eyebrow>
+          <h1 className="font-heading text-4xl font-bold uppercase leading-none text-foreground">Revisa tu correo</h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Enviamos un codigo de 6 digitos a <span className="text-foreground">{email}</span>.
+          </p>
+          {codigoDemo && (
+            <p className="mt-4 border-l-2 border-amber-400 pl-3 text-xs text-amber-300">
+              Demo: tu codigo es <strong className="tracking-widest">{codigoDemo}</strong>.
+            </p>
+          )}
+          <div className="mt-8 flex flex-col gap-4">
+            <input
+              value={otpInput}
+              onChange={(e) => onOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="000000"
+              inputMode="numeric"
+              onKeyDown={(e) => e.key === "Enter" && onVerificar()}
+              className={cn(inputBase, "text-center text-2xl font-bold tracking-[0.5em]")}
+            />
+            {errReg && <p className="text-xs text-destructive">{errReg}</p>}
+            <Button size="lg" onClick={onVerificar} disabled={enviando} className="h-12 font-semibold">
+              {enviando ? <><Loader2 className="size-4 animate-spin" /> Verificando...</> : "Verificar codigo"}
+            </Button>
+            <button
+              onClick={onPedirCodigo}
+              disabled={reenvioEn > 0}
+              className={cn("text-sm", reenvioEn > 0 ? "text-muted-foreground/60" : "text-primary")}
+            >
+              {reenvioEn > 0 ? `Reenviar codigo en ${reenvioEn}s` : "Reenviar codigo"}
+            </button>
+          </div>
+        </>
+      )}
+    </section>
+  )
+}
+
+function BlackLogoMark({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex items-center justify-center rounded-[1.35rem] bg-black shadow-2xl shadow-black/40", className)}>
+      <Zap className="size-1/2 fill-white text-white" />
+    </div>
+  )
+}
+
 function CuotaBadge({ registrado, restantes, limite }: { registrado: boolean; restantes: number; limite: number }) {
   const agotada = restantes === 0
   return (
@@ -723,7 +914,7 @@ function NumField({
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-background/50 px-3.5 py-3">
+    <div className="min-w-[10.5rem] snap-start rounded-lg border border-border bg-card/45 px-3.5 py-3 sm:min-w-0">
       <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-bold leading-none text-foreground">{value}</div>
       {sub && <div className="mt-1 text-[11px] text-muted-foreground/70">{sub}</div>}

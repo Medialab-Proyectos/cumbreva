@@ -27,32 +27,30 @@ export function MedidorBateria({
   distKm: number
 }) {
   const fillPct = Math.max(0, Math.min(100, pct))
-  const cortePct = alcanza ? 100 : Math.max(0, Math.min(100, (kmAlcance / distKm) * 100))
   const color = !alcanza ? C.red : pct < 20 ? C.amber : C.neon
   return (
-    <div className="relative h-14 overflow-hidden rounded-xl border" style={{ borderColor: C.line, background: C.panel }}>
-      <div
-        className="absolute inset-y-0 left-0 transition-[width] duration-700"
-        style={{
-          width: `${fillPct}%`,
-          background: `linear-gradient(90deg, ${color}22, ${color})`,
-          boxShadow: `0 0 24px ${color}99`,
-        }}
-      />
-      {!alcanza && (
-        <div className="absolute inset-y-0" style={{ left: `${cortePct}%`, width: 2, background: C.red, boxShadow: `0 0 12px ${C.red}` }}>
-          <div className="absolute -left-7 -top-0.5 whitespace-nowrap text-[10px] font-bold" style={{ color: C.red }}>
-            SE AGOTA
-          </div>
+    <div>
+      <div className="relative h-14 overflow-hidden rounded-lg border" style={{ borderColor: C.line, background: C.panel }}>
+        <div
+          className="absolute inset-y-0 left-0 transition-[width] duration-700"
+          style={{
+            width: `${fillPct}%`,
+            background: `linear-gradient(90deg, ${color}22, ${color})`,
+            boxShadow: `0 0 24px ${color}80`,
+          }}
+        />
+        <div className="absolute inset-0 flex items-center justify-between px-4">
+          <span className="text-2xl font-bold" style={{ color: C.text }}>
+            {Math.round(pct)}%
+          </span>
+          <span className="text-xs font-semibold" style={{ color: C.text }}>
+            bateria al llegar
+          </span>
         </div>
-      )}
-      <div className="absolute inset-0 flex items-center justify-between px-4">
-        <span className="text-2xl font-bold" style={{ color: "#06140a", mixBlendMode: "difference", filter: "invert(1)" }}>
-          {Math.round(pct)}%
-        </span>
-        <span className="text-xs font-semibold" style={{ color: C.text }}>
-          llegada estimada
-        </span>
+      </div>
+      <div className="mt-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+        <span>Alcance estimado: {Math.round(kmAlcance)} km</span>
+        <span>Ruta: {Math.round(distKm)} km</span>
       </div>
     </div>
   )
@@ -95,7 +93,7 @@ export function MapaRuta({
   const pts = coords.map((c) => proy(c[0], c[1]))
 
   const colorPendiente = (g: number) => {
-    if (g > 0.06) return C.red
+    if (g > 0.06) return "#ffd166"
     if (g > 0.025) return C.amber
     if (g > -0.02) return C.neon
     return C.blue
@@ -165,7 +163,7 @@ export function MapaRuta({
         <text x="12" y="0">plano</text>
         <circle cx="62" cy="-3" r="4" fill={C.amber} />
         <text x="70" y="0">subida</text>
-        <circle cx="128" cy="-3" r="4" fill={C.red} />
+        <circle cx="128" cy="-3" r="4" fill="#ffd166" />
         <text x="136" y="0">subida fuerte</text>
         <circle cx="222" cy="-3" r="4" fill={C.blue} />
         <text x="230" y="0">bajada</text>

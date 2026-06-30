@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Calculator } from "@/components/calculadora/calculator"
 import { HideOnStandalone } from "@/components/hide-on-standalone"
+import { Logo } from "@/components/logo"
 import { PwaInstallButton } from "@/components/pwa-install-button"
 import { SiteFooter } from "@/components/site-footer"
 
@@ -16,21 +17,22 @@ export const metadata: Metadata = {
 export default function CalculadoraPage() {
   return (
     <div className="min-h-dvh bg-background">
-      <HideOnStandalone>
-        <header className="border-b border-border">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4 sm:px-8">
+      <header className="sticky top-0 z-50 border-b border-border/70 bg-background/92 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:px-8">
+          <Logo showTagline={false} />
+          <HideOnStandalone>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="hidden items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
             >
               <ArrowLeft className="size-4" />
               Volver a Cumbreva
             </Link>
             <PwaInstallButton className="h-9 px-4 text-sm" />
-          </div>
-        </header>
-      </HideOnStandalone>
-      <main className="px-5 py-10 sm:px-8 sm:py-14">
+          </HideOnStandalone>
+        </div>
+      </header>
+      <main className="px-5 py-6 sm:px-8 sm:py-10">
         <Calculator />
       </main>
       <HideOnStandalone>
