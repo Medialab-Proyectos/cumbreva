@@ -27,11 +27,14 @@ export function DownloadApp() {
             rutas, siempre a la mano. Sin tiendas de apps, se instala desde el navegador.
           </p>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <PwaInstallButton className="h-12 px-6 text-base" />
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <PwaInstallButton className="h-12 border-transparent bg-background px-6 text-base font-semibold text-foreground shadow-lg shadow-black/30 hover:bg-background/85 dark:border-transparent dark:bg-background dark:hover:bg-background/85" />
           <Link
             href="/calculadora"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 px-6 text-base font-semibold")}
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "lg" }),
+              "h-12 border-transparent bg-background px-6 text-base font-semibold text-foreground shadow-lg shadow-black/25 hover:bg-background/85",
+            )}
           >
             <Mountain className="size-5 text-primary" />
             Abrir la calculadora

@@ -17,7 +17,7 @@ export function Store() {
           <div className="eyebrow text-xs text-primary">Tienda Cumbreva</div>
           <h1 className="heading-display mt-2 text-3xl text-foreground sm:text-4xl">Lleva la cumbre puesta</h1>
           <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-            Gorras, mugs, camisetas y hoodies de Cumbreva. Edición para los pioneros de la movilidad eléctrica.
+            Camisetas, busos, tazas y peluches de Cumbreva. Edicion para los pioneros de la movilidad electrica.
           </p>
         </div>
         <Button size="lg" variant="outline" onClick={() => setOpen(true)} className="relative">
@@ -51,13 +51,18 @@ export function Store() {
 function ProductoCard({ producto }: { producto: Producto }) {
   const [vista, setVista] = useState(0)
 
-  const galeria = producto.galeria.length ? producto.galeria : [producto.gradiente]
+  const galeria = producto.imagenes
   const rotar = (dir: number) => setVista((v) => (v + dir + galeria.length) % galeria.length)
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40">
-      <div className={cn("relative flex aspect-square items-center justify-center bg-gradient-to-br transition-colors", galeria[vista])}>
-        <span className="text-6xl drop-shadow-lg transition-transform group-hover:scale-110">{producto.emoji}</span>
+    <div className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/40">
+      <div className="relative aspect-square overflow-hidden bg-muted/30">
+        <img
+          src={galeria[vista]}
+          alt={producto.nombre}
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        />
         {producto.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2.5 py-1 text-[11px] font-semibold text-primary backdrop-blur">
             {producto.badge}

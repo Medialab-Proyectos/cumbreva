@@ -66,7 +66,7 @@ export function Hero() {
           </div>
 
           <p className="mt-3 max-w-md text-[11px] leading-relaxed text-muted-foreground/70">
-            *Prueba anticipada del cálculo de rutas (versión demo), basada en elevación y terreno. En evaluación.
+            *Prueba anticipada del calculo de rutas, basada en elevacion y terreno. En evaluacion.
           </p>
 
           <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 sm:mt-6">

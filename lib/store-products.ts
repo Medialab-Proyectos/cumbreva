@@ -1,16 +1,12 @@
-// Catálogo de la tienda Cumbreva (demo). Precios en COP.
-// Las compras son solo para Colombia; el pago real (Mercado Pago / ePayco) se integra después.
+// Catalogo de la tienda Cumbreva (demo). Precios en COP.
+// Las compras son solo para Colombia; el pago real (Mercado Pago / ePayco) se integra despues.
 
 export type Producto = {
   id: string
   nombre: string
   precio: number
   descripcion: string
-  emoji: string
-  /** gradiente principal (placeholder visual mientras no hay foto) */
-  gradiente: string
-  /** galería: varios "ángulos"/imágenes para rotar (placeholder = gradientes) */
-  galeria: string[]
+  imagenes: string[]
   /** tallas disponibles (solo prendas). Si existe, hay que elegir una. */
   tallas?: string[]
   badge?: string
@@ -18,44 +14,55 @@ export type Producto = {
 
 export const PRODUCTOS: Producto[] = [
   {
-    id: "gorra",
-    nombre: "Gorra Cumbreva",
-    precio: 89000,
-    descripcion: "Gorra de perfil bajo con el logo bordado en hilo neón.",
-    emoji: "🧢",
-    gradiente: "from-primary/30 to-emerald-900/40",
-    galeria: ["from-primary/30 to-emerald-900/40", "from-emerald-600/30 to-black/50"],
-    badge: "Más vendida",
-  },
-  {
-    id: "mug",
-    nombre: "Mug Cumbreva",
-    precio: 45000,
-    descripcion: "Mug de cerámica 350 ml. Para cargar tu café mientras cargas el carro.",
-    emoji: "☕",
-    gradiente: "from-sky-500/25 to-emerald-900/40",
-    galeria: ["from-sky-500/25 to-emerald-900/40", "from-emerald-700/25 to-black/50"],
-  },
-  {
     id: "camiseta",
     nombre: "Camiseta Cumbreva",
     precio: 99000,
-    descripcion: "Camiseta 100% algodón con estampado de la cumbre eléctrica.",
-    emoji: "👕",
-    gradiente: "from-primary/25 to-teal-900/40",
-    galeria: ["from-primary/25 to-teal-900/40", "from-teal-600/25 to-black/50", "from-emerald-500/25 to-emerald-950/50"],
+    descripcion: "Camiseta con grafica Cumbreva para quienes ruedan electrico.",
+    imagenes: [
+      "/tienda/camiseta%20(1).png",
+      "/tienda/camiseta%20(2).png",
+      "/tienda/camiseta%20(3).png",
+      "/tienda/camiseta%20(4).png",
+    ],
     tallas: ["S", "M", "L", "XL"],
   },
   {
-    id: "hoodie",
-    nombre: "Hoodie Cumbreva",
+    id: "buso",
+    nombre: "Buso Cumbreva",
     precio: 189000,
-    descripcion: "Hoodie premium con interior afelpado y cordones neón.",
-    emoji: "🧥",
-    gradiente: "from-amber-500/20 to-emerald-900/40",
-    galeria: ["from-amber-500/20 to-emerald-900/40", "from-emerald-700/25 to-black/50", "from-amber-400/15 to-teal-950/50"],
+    descripcion: "Buso de la marca para trayectos frios, carga nocturna y carretera.",
+    imagenes: [
+      "/tienda/buso%20(1).png",
+      "/tienda/buso%20(2).png",
+      "/tienda/buso%20(3).png",
+      "/tienda/buso%20(4).png",
+    ],
     tallas: ["S", "M", "L", "XL"],
     badge: "Nuevo",
+  },
+  {
+    id: "taza",
+    nombre: "Taza Cumbreva",
+    precio: 45000,
+    descripcion: "Taza para el cafe de ruta mientras planeas tu siguiente carga.",
+    imagenes: [
+      "/tienda/taza%20(1).png",
+      "/tienda/taza%20(2).png",
+      "/tienda/taza%20(3).png",
+      "/tienda/taza%20(4).png",
+      "/tienda/taza%20(5).png",
+      "/tienda/taza%20(6).png",
+      "/tienda/taza%20(7).png",
+      "/tienda/taza%20(8).png",
+    ],
+    badge: "Mas vistas",
+  },
+  {
+    id: "peluche",
+    nombre: "Peluche Cumbreva",
+    precio: 79000,
+    descripcion: "Peluche de la mascota Cumbreva para llevar la marca en el carro.",
+    imagenes: ["/tienda/peluche.png"],
   },
 ]
 

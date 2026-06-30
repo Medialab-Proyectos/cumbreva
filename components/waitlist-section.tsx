@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { Clock, Gift, Headset } from "lucide-react"
 import { WaitlistForm } from "@/components/waitlist-form"
 
@@ -26,35 +27,56 @@ export function WaitlistSection() {
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-0 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-primary/15 blur-[140px]"
       />
-      <div className="relative mx-auto max-w-2xl px-5 text-center sm:px-8">
-        <p className="eyebrow mb-4 text-xs text-primary">Lista de espera</p>
-        <h2 className="heading-display text-balance text-4xl text-foreground sm:text-5xl">
-          Unete a la lista de espera
-        </h2>
-        <p className="mx-auto mt-5 max-w-md text-pretty text-lg leading-relaxed text-muted-foreground">
-          Dejanos tus datos y te avisaremos apenas Cumbreva este disponible. Se de los
-          primeros en probar un copiloto para carro electrico pensado para Colombia.
-        </p>
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="text-left">
+          <p className="eyebrow mb-4 text-xs text-primary">Lista de espera</p>
+          <h2 className="heading-display text-balance text-4xl text-foreground lg:text-5xl">
+            Unete a la lista de espera
+          </h2>
+          <p className="mt-5 max-w-3xl text-pretty text-base leading-relaxed text-muted-foreground lg:text-lg">
+            Dejanos tus datos y te avisaremos apenas Cumbreva este disponible. Se de los
+            primeros en probar un copiloto para carro electrico pensado para Colombia.
+          </p>
+        </div>
 
-        <ul className="-mx-5 mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {perks.map((perk) => (
-            <li
-              key={perk.title}
-              className="w-[78%] shrink-0 snap-start rounded-2xl border border-border bg-card p-5 text-left sm:w-auto"
-            >
-              <span className="mb-3 flex size-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-                <perk.icon className="size-5" />
-              </span>
-              <h3 className="font-heading text-base font-semibold uppercase tracking-tight text-foreground">
-                {perk.title}
-              </h3>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{perk.desc}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 sm:items-stretch sm:gap-8 lg:gap-14">
+          {/* Izquierda: imagen + cajas de beneficios */}
+          <div className="flex min-w-0 flex-col">
+            <div className="overflow-hidden rounded-2xl border border-border shadow-xl shadow-black/25">
+              <Image
+                src="/waitlist-couple.png"
+                alt="Pareja revisando la autonomia de su carro electrico en la app Cumbreva mientras carga"
+                width={1402}
+                height={1122}
+                sizes="(min-width: 1024px) 560px, 100vw"
+                className="aspect-[5/4] w-full object-cover"
+              />
+            </div>
 
-        <div className="mx-auto mt-10 max-w-md text-left">
-          <WaitlistForm />
+            <ul className="mt-5 grid flex-1 grid-cols-3 grid-rows-1 gap-3">
+              {perks.map((perk) => (
+                <li
+                  key={perk.title}
+                  className="flex flex-col justify-start gap-3 rounded-xl border border-border bg-card/70 p-4 text-left"
+                >
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                    <perk.icon className="size-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-heading text-sm font-semibold uppercase leading-tight tracking-tight text-foreground sm:text-base">
+                      {perk.title}
+                    </h3>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">{perk.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Derecha: formulario */}
+          <div className="min-w-0 text-left">
+            <WaitlistForm />
+          </div>
         </div>
       </div>
     </section>

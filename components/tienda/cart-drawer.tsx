@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Check, Minus, Plus, ShoppingBag, ShoppingCart, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { formatoCOP } from "@/lib/store-products"
 import { useCart } from "@/components/tienda/cart-context"
 
@@ -61,9 +60,12 @@ export function CartDrawer() {
               <ul className="flex flex-col gap-3">
                 {items.map(({ lineKey, producto, talla, qty }) => (
                   <li key={lineKey} className="flex items-center gap-3 rounded-xl border border-border bg-background/40 p-3">
-                    <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-xl", producto.gradiente)}>
-                      {producto.emoji}
-                    </span>
+                    <img
+                      src={producto.imagenes[0]}
+                      alt={producto.nombre}
+                      className="size-12 shrink-0 rounded-lg object-cover"
+                      loading="lazy"
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-foreground">
                         {producto.nombre}{talla ? <span className="text-muted-foreground"> · {talla}</span> : null}

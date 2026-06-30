@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { PRODUCTOS, formatoCOP } from "@/lib/store-products"
-import { cn } from "@/lib/utils"
 
 /** Teaser de la tienda en el home (visible y responsive). Lleva a /tienda. */
 export function StoreTeaser() {
@@ -12,7 +11,7 @@ export function StoreTeaser() {
           <div className="eyebrow text-xs text-primary">Tienda</div>
           <h2 className="heading-display mt-2 text-3xl text-foreground sm:text-4xl">Lleva la cumbre puesta</h2>
           <p className="mt-2 max-w-lg text-pretty text-sm text-muted-foreground sm:text-base">
-            Gorras, mugs, camisetas y hoodies de Cumbreva. Para los pioneros de la movilidad eléctrica.
+            Camisetas, busos, tazas y peluches de Cumbreva. Para los pioneros de la movilidad electrica.
           </p>
         </div>
         <Link
@@ -28,10 +27,15 @@ export function StoreTeaser() {
           <Link
             key={p.id}
             href="/tienda"
-            className="group flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40 sm:w-[42%] lg:w-auto"
+            className="group flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/40 sm:w-[42%] lg:w-auto"
           >
-            <div className={cn("flex aspect-square items-center justify-center bg-gradient-to-br", p.gradiente)}>
-              <span className="text-5xl transition-transform group-hover:scale-110 sm:text-6xl">{p.emoji}</span>
+            <div className="aspect-square overflow-hidden bg-muted/30">
+              <img
+                src={p.imagenes[0]}
+                alt={p.nombre}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
             </div>
             <div className="flex items-center justify-between p-3 sm:p-4">
               <span className="truncate text-sm font-medium text-foreground">{p.nombre.replace("Cumbreva", "").trim()}</span>
