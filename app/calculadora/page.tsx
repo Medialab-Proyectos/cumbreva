@@ -19,7 +19,7 @@ export default function CalculadoraPage() {
     <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/92 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:px-8">
-          <Logo showTagline={false} />
+          <Logo />
           <HideOnStandalone>
             <Link
               href="/"

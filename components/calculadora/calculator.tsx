@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ArrowLeft, Check, ChevronDown, Copy, History, Loader2, MapPin, Share2, Zap } from "lucide-react"
+import { Check, ChevronDown, Copy, History, Loader2, LogOut, MapPin, MessageSquare, Share2, Star, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { SITE_URL } from "@/lib/site"
@@ -20,6 +20,8 @@ type Fase = "datos" | "yaregistrado" | "otp" | "ok"
 const card = "border-t border-border/70 py-5 sm:py-6"
 const inputBase =
   "w-full border-0 border-b-2 border-border bg-transparent px-0.5 py-2.5 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/45 focus:border-primary"
+
+const clampBattery = (n: number) => Math.min(100, Math.max(0, Number.isFinite(n) ? n : 0))
 
 export function Calculator() {
   // Ruta
@@ -67,12 +69,24 @@ export function Calculator() {
   const [verSpecs, setVerSpecs] = useState(false)
   const [histItems, setHistItems] = useState<{ origen: string; destino: string; distKm?: number; alcanza?: boolean; ts: number }[]>([])
   const [histCargando, setHistCargando] = useState(false)
+  const [feedbackAbierto, setFeedbackAbierto] = useState(false)
+  const [feedbackTexto, setFeedbackTexto] = useState("")
+  const [feedbackEnviando, setFeedbackEnviando] = useState(false)
+  const [feedbackError, setFeedbackError] = useState("")
 
   const tO = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const tD = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   // Sesión inicial (1 lectura a la BD)
   useEffect(() => {
+    const inicio = Date.now()
+    let cancelado = false
+    const terminarSplash = () => {
+      const restante = Math.max(0, 400 - (Date.now() - inicio))
+      window.setTimeout(() => {
+        if (!cancelado) setSesionLista(true)
+      }, restante)
+    }
     ;(async () => {
       try {
         const r = await fetch("/api/calc/sesion", {
@@ -91,16 +105,15 @@ export function Calculator() {
         }
         setLimite(j.limite ?? 2)
         setRestantes(j.restantes ?? 0)
-        setSesionLista(true)
       } catch {
-        /* sin BD: cae a límite anónimo por defecto */
+        /* Si la sesion falla, dejamos que el usuario intente entrar con correo. */
+      } finally {
+        terminarSplash()
       }
     })()
-  }, [])
-
-  useEffect(() => {
-    const t = setTimeout(() => setSesionLista(true), 1200)
-    return () => clearTimeout(t)
+    return () => {
+      cancelado = true
+    }
   }, [])
 
   // Sincroniza specs al cambiar de modelo
@@ -130,6 +143,79 @@ export function Calculator() {
       .catch(() => {})
       .finally(() => setHistCargando(false))
   }, [tab, registrado])
+
+  useEffect(() => {
+    if (!sesionLista || !registrado) return
+    if (window.sessionStorage.getItem("cumbreva_session_counted") === "1") return
+    window.sessionStorage.setItem("cumbreva_session_counted", "1")
+    const key = "cumbreva_session_count"
+    const dismissedKey = "cumbreva_feedback_done"
+    const total = Number(window.localStorage.getItem(key) ?? "0") + 1
+    window.localStorage.setItem(key, String(total))
+    if (total >= 5 && window.localStorage.getItem(dismissedKey) !== "1") {
+      setFeedbackAbierto(true)
+    }
+  }, [registrado, sesionLista])
+
+  const pedirFeedbackSiToca = useCallback(() => {
+    const key = "cumbreva_calc_count"
+    const dismissedKey = "cumbreva_feedback_done"
+    const total = Number(window.localStorage.getItem(key) ?? "0") + 1
+    window.localStorage.setItem(key, String(total))
+    if (total >= 5 && window.localStorage.getItem(dismissedKey) !== "1") {
+      setFeedbackAbierto(true)
+    }
+  }, [])
+
+  const enviarFeedback = useCallback(async (mensaje: string, contexto?: { origen?: string; destino?: string }) => {
+    const limpio = mensaje.trim()
+    if (!limpio) {
+      setFeedbackError("Escribe un comentario corto para enviarlo.")
+      return false
+    }
+    setFeedbackEnviando(true)
+    setFeedbackError("")
+    try {
+      const r = await fetch("/api/calc/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mensaje: limpio,
+          origen: contexto?.origen ?? origen,
+          destino: contexto?.destino ?? destino,
+          completado: true,
+        }),
+      })
+      const j = await r.json().catch(() => ({}))
+      if (!r.ok || !j.ok) {
+        setFeedbackError(j.error || "No se pudo enviar. Intenta de nuevo.")
+        return false
+      }
+      window.localStorage.setItem("cumbreva_feedback_done", "1")
+      setFeedbackTexto("")
+      setFeedbackAbierto(false)
+      return true
+    } catch {
+      setFeedbackError("No se pudo enviar. Intenta de nuevo.")
+      return false
+    } finally {
+      setFeedbackEnviando(false)
+    }
+  }, [destino, origen])
+
+  const cerrarSesion = useCallback(async () => {
+    await fetch("/api/calc/logout", { method: "POST" }).catch(() => {})
+    setRegistrado(false)
+    setNombre("")
+    setRes(null)
+    setTab("calcular")
+    setHistItems([])
+    setEmail("")
+    setOtpInput("")
+    setFase("datos")
+    setLimite(2)
+    setRestantes(2)
+  }, [])
 
   const buscarSug = (txt: string, set: (p: Punto[]) => void) => {
     if (txt.trim().length < 3) return set([])
@@ -201,6 +287,7 @@ export function Calculator() {
       // 3) Física (cliente)
       const resultado = evaluar(rj, { kwh, whkm, masa, bateria })
       setRes(resultado)
+      pedirFeedbackSiToca()
 
       // 4) Historial (best-effort, solo registrados)
       fetch("/api/calc/historial", {
@@ -218,7 +305,7 @@ export function Calculator() {
     } finally {
       setCargando(false)
     }
-  }, [origen, destino, origenSel, destinoSel, kwh, whkm, masa, bateria, regresaSinRegistro])
+  }, [origen, destino, origenSel, destinoSel, kwh, whkm, masa, bateria, regresaSinRegistro, pedirFeedbackSiToca])
 
   // Pedir OTP (registro nuevo o entrada de usuario existente)
   const pedirCodigo = useCallback(async () => {
@@ -353,7 +440,17 @@ export function Calculator() {
           <Eyebrow>Autonomia real</Eyebrow>
           <h1 className="font-heading text-2xl font-bold uppercase leading-none text-foreground">Planea tu ruta</h1>
         </div>
-        <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
+        <div className="flex items-center gap-2">
+          <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
+          <button
+            type="button"
+            onClick={cerrarSesion}
+            className="inline-flex size-9 items-center justify-center rounded-lg border border-border bg-card/40 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            aria-label="Cerrar sesion"
+          >
+            <LogOut className="size-4" />
+          </button>
+        </div>
       </header>
 
       <div className="sticky top-16 z-30 -mx-5 mb-5 grid grid-cols-2 gap-1 border-b border-border/60 bg-background/92 px-5 py-2 backdrop-blur-xl sm:-mx-8 sm:px-8">
@@ -372,16 +469,16 @@ export function Calculator() {
       </div>
 
       {tab === "historial" ? (
-        <HistorialView items={histItems} cargando={histCargando} onIr={() => setTab("calcular")} />
+        <HistorialView
+          items={histItems}
+          cargando={histCargando}
+          feedbackEnviando={feedbackEnviando}
+          onIr={() => setTab("calcular")}
+          onFeedback={enviarFeedback}
+        />
       ) : res ? (
         /* ---- Vista de resultado (como pantalla de app) ---- */
-        <div>
-          <button
-            onClick={() => setRes(null)}
-            className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" /> Nueva búsqueda
-          </button>
+        <div className="pb-36">
           <section className="space-y-5">
             <div className="mb-2 text-xs font-medium text-muted-foreground">
               {origen.split(",")[0]}{" -> "}{destino.split(",")[0]}
@@ -446,7 +543,7 @@ export function Calculator() {
         </div>
       ) : (
         /* ---- Vista de formulario (botón sticky abajo) ---- */
-        <div className="pb-24">
+        <div className="pb-36">
           <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
             Calcula si tu batería <span className="text-foreground">realmente alcanza</span> entre dos puntos, corrigiendo
             por el terreno real de la ruta: pendiente, altitud y clima. Indica el origen, el destino y tu carga actual.
@@ -481,7 +578,7 @@ export function Calculator() {
                 </select>
               </div>
               {/* Lo más importante: con cuánta carga sale */}
-              <NumField label="Carga actual de la batería" unit="%" value={bateria} onChange={setBateria} step={5} max={100} />
+              <BatteryField value={bateria} onChange={setBateria} />
             </div>
 
             {/* Especificaciones en acordeón (la app queda más pequeña) */}
@@ -518,6 +615,23 @@ export function Calculator() {
             </div>
           </div>
         </div>
+      )}
+
+      {cargando && <AnalysisOverlay />}
+
+      {feedbackAbierto && (
+        <FeedbackModal
+          value={feedbackTexto}
+          error={feedbackError}
+          sending={feedbackEnviando}
+          onChange={setFeedbackTexto}
+          onClose={() => {
+            window.localStorage.setItem("cumbreva_feedback_done", "1")
+            setFeedbackAbierto(false)
+            setFeedbackError("")
+          }}
+          onSubmit={() => enviarFeedback(feedbackTexto)}
+        />
       )}
 
       {/* Muro de registro */}
@@ -760,9 +874,72 @@ function AccessGate({
 
 function BlackLogoMark({ className }: { className?: string }) {
   return (
-    <div className={cn("flex items-center justify-center rounded-[1.35rem] bg-black shadow-2xl shadow-black/40", className)}>
-      <Zap className="size-1/2 fill-white text-white" />
+    <div className={cn("flex items-center justify-center rounded-full border border-primary/60 bg-primary/15 text-primary shadow-2xl shadow-primary/35", className)}>
+      <Zap className="size-1/2 fill-current" />
     </div>
+  )
+}
+
+function AnalysisOverlay() {
+  return (
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm">
+      <div className="w-full max-w-xs rounded-lg border border-primary/25 bg-card p-6 text-center shadow-2xl">
+        <BlackLogoMark className="mx-auto size-20 animate-pulse" />
+        <h2 className="mt-5 font-heading text-2xl font-bold uppercase leading-none text-foreground">Analizando datos</h2>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Estamos calculando ruta, elevacion y consumo real.
+        </p>
+        <Loader2 className="mx-auto mt-5 size-5 animate-spin text-primary" />
+      </div>
+    </div>
+  )
+}
+
+function FeedbackModal({
+  value,
+  error,
+  sending,
+  onChange,
+  onClose,
+  onSubmit,
+}: {
+  value: string
+  error: string
+  sending: boolean
+  onChange: (v: string) => void
+  onClose: () => void
+  onSubmit: () => void
+}) {
+  return (
+    <Modal onClose={onClose}>
+      <div className="mb-4 flex items-center gap-3">
+        <span className="flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary">
+          <Star className="size-5 fill-current" />
+        </span>
+        <div>
+          <Eyebrow>Tu opinion ayuda</Eyebrow>
+          <h2 className="text-xl font-bold leading-tight text-foreground">Califica Cumbreva</h2>
+        </div>
+      </div>
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        Ya probaste varias rutas. Cuéntanos que mejorarías para que esta app ayude mejor a otros conductores.
+      </p>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Ej. Me ayudo a entender el margen, pero agregaria puntos de carga..."
+        className="mt-4 min-h-28 w-full resize-none rounded-lg border border-border bg-background/60 p-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-primary"
+      />
+      {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+      <div className="mt-4 flex gap-2">
+        <Button variant="outline" onClick={onClose} disabled={sending} className="h-11 flex-1">
+          Luego
+        </Button>
+        <Button onClick={onSubmit} disabled={sending} className="h-11 flex-1 font-semibold">
+          {sending ? <><Loader2 className="size-4 animate-spin" /> Enviando...</> : "Enviar"}
+        </Button>
+      </div>
+    </Modal>
   )
 }
 
@@ -786,12 +963,20 @@ function CuotaBadge({ registrado, restantes, limite }: { registrado: boolean; re
 function HistorialView({
   items,
   cargando,
+  feedbackEnviando,
   onIr,
+  onFeedback,
 }: {
   items: { origen: string; destino: string; distKm?: number; alcanza?: boolean; ts: number }[]
   cargando: boolean
+  feedbackEnviando: boolean
   onIr: () => void
+  onFeedback: (mensaje: string, contexto?: { origen?: string; destino?: string }) => Promise<boolean>
 }) {
+  const [abierto, setAbierto] = useState<number | null>(null)
+  const [comentario, setComentario] = useState("")
+  const [enviado, setEnviado] = useState<number | null>(null)
+
   if (cargando) {
     return (
       <div className="flex justify-center py-16 text-muted-foreground">
@@ -813,26 +998,73 @@ function HistorialView({
     return s.length > 18 ? s.slice(0, 17) + "…" : s
   }
   return (
-    <section className="rounded-2xl border border-border bg-card/40 p-5 sm:p-6">
+    <section>
       <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tus búsquedas recientes</div>
-      <ul className="flex flex-col divide-y divide-border">
+      <ul className="flex flex-col divide-y divide-border border-y border-border">
         {items.map((b, i) => (
-          <li key={i} className="flex items-center justify-between gap-3 py-3 text-sm">
-            <span className="flex min-w-0 items-center gap-2 text-foreground">
-              <MapPin className="size-3.5 shrink-0 text-primary" />
-              <span className="truncate">{recorta(b.origen)} → {recorta(b.destino)}</span>
-            </span>
-            <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-              {b.distKm ? `${Math.round(b.distKm)} km` : ""}
-              {typeof b.alcanza === "boolean" && (
-                <span className={cn("rounded-full px-2 py-0.5", b.alcanza ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive")}>
-                  {b.alcanza ? "alcanza" : "no alcanza"}
-                </span>
-              )}
-            </span>
+          <li key={i} className="py-3 text-sm">
+            <div className="flex items-center justify-between gap-3">
+              <span className="flex min-w-0 items-center gap-2 text-foreground">
+                <MapPin className="size-3.5 shrink-0 text-primary" />
+                <span className="truncate">{recorta(b.origen)} -&gt; {recorta(b.destino)}</span>
+              </span>
+              <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+                {b.distKm ? `${Math.round(b.distKm)} km` : ""}
+                {typeof b.alcanza === "boolean" && (
+                  <span className={cn("rounded-full px-2 py-0.5", b.alcanza ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive")}>
+                    {b.alcanza ? "alcanza" : "no alcanza"}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setAbierto(abierto === i ? null : i)
+                  setComentario("")
+                }}
+                className="inline-flex items-center gap-1.5 text-xs text-primary transition-colors hover:text-foreground"
+              >
+                <MessageSquare className="size-3.5" />
+                Apoyar a otros con un comentario
+              </button>
+              {enviado === i && <span className="text-xs text-primary">Comentario guardado</span>}
+            </div>
+            {abierto === i && (
+              <div className="mt-3">
+                <textarea
+                  value={comentario}
+                  onChange={(e) => setComentario(e.target.value)}
+                  placeholder="Ej. Esta ruta tiene subida fuerte saliendo de la ciudad..."
+                  className="min-h-20 w-full resize-none rounded-lg border border-border bg-card/40 p-3 text-sm text-foreground outline-none placeholder:text-muted-foreground/50 focus:border-primary"
+                />
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      const ok = await onFeedback(comentario, { origen: b.origen, destino: b.destino })
+                      if (ok) {
+                        setEnviado(i)
+                        setAbierto(null)
+                        setComentario("")
+                      }
+                    }}
+                    disabled={feedbackEnviando || !comentario.trim()}
+                    className="font-semibold"
+                  >
+                    {feedbackEnviando ? <Loader2 className="size-3.5 animate-spin" /> : null}
+                    Guardar comentario
+                  </Button>
+                </div>
+              </div>
+            )}
           </li>
         ))}
       </ul>
+      <p className="mt-4 text-xs leading-relaxed text-muted-foreground/70">
+        Tus comentarios ayudan a mejorar futuras recomendaciones y a orientar a otros usuarios en rutas similares.
+      </p>
     </section>
   )
 }
@@ -879,6 +1111,45 @@ function CampoLugar({
   )
 }
 
+function BatteryField({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const pct = clampBattery(value)
+  const set = (n: number) => onChange(clampBattery(n))
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Carga actual de la bateria</label>
+        <div className="flex w-24 items-center gap-1 border-b-2 border-border transition-colors focus-within:border-primary">
+          <input
+            type="number"
+            value={pct}
+            min={0}
+            max={100}
+            step={1}
+            onChange={(e) => set(Number(e.target.value))}
+            className="min-w-0 flex-1 bg-transparent py-1.5 text-right text-lg font-semibold text-foreground outline-none"
+          />
+          <span className="text-xs font-semibold text-muted-foreground/70">%</span>
+        </div>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        step={1}
+        value={pct}
+        onChange={(e) => set(Number(e.target.value))}
+        className="h-3 w-full cursor-pointer appearance-none rounded-full accent-primary"
+        style={{ background: `linear-gradient(90deg, #36ff7a ${pct}%, rgba(255,255,255,0.14) ${pct}%)` }}
+        aria-label="Carga actual de la bateria"
+      />
+      <div className="mt-2 flex justify-between text-[11px] text-muted-foreground/70">
+        <span>0%</span>
+        <span>100%</span>
+      </div>
+    </div>
+  )
+}
+
 function NumField({
   label,
   unit,
@@ -903,7 +1174,10 @@ function NumField({
           value={value}
           step={step}
           max={max}
-          onChange={(e) => onChange(Math.max(0, Number(e.target.value)))}
+          onChange={(e) => {
+            const n = Math.max(0, Number(e.target.value))
+            onChange(typeof max === "number" ? Math.min(max, n) : n)
+          }}
           className="min-w-0 flex-1 bg-transparent py-2.5 text-lg text-foreground outline-none"
         />
         <span className="text-xs font-semibold text-muted-foreground/70">{unit}</span>
