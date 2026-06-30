@@ -4,7 +4,7 @@ import { OpenCalculatorButton } from "@/components/calculadora/open-calculator-b
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-const benefits = ["Acceso anticipado gratis", "Sin permanencia", "Cupos limitados"]
+const benefits = ["Acceso anticipado gratis", "Sin permanencia"]
 
 export function Hero() {
   return (
@@ -59,15 +59,13 @@ export function Hero() {
             </OpenCalculatorButton>
           </div>
 
-          <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 sm:mt-9">
+          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 sm:mt-8">
             {benefits.map((benefit) => (
               <li
                 key={benefit}
-                className="flex items-center gap-2 text-sm font-medium text-foreground/90"
+                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
               >
-                <span className="flex size-5 items-center justify-center rounded-full bg-primary/15">
-                  <Check className="size-3 text-primary" />
-                </span>
+                <Check className="size-3.5 text-primary" />
                 {benefit}
               </li>
             ))}

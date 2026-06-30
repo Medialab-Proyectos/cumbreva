@@ -23,12 +23,12 @@ export function StoreTeaser() {
         </Link>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="-mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-4 lg:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {PRODUCTOS.map((p) => (
           <Link
             key={p.id}
             href="/tienda"
-            className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40"
+            className="group flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40 sm:w-[42%] lg:w-auto"
           >
             <div className={cn("flex aspect-square items-center justify-center bg-gradient-to-br", p.gradiente)}>
               <span className="text-5xl transition-transform group-hover:scale-110 sm:text-6xl">{p.emoji}</span>

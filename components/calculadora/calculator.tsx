@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Loader2, MapPin, Mountain, Zap } from "lucide-react"
+import { ArrowLeft, Loader2, MapPin, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
@@ -81,6 +81,16 @@ export function Calculator() {
         }
         setLimite(j.limite ?? 2)
         setRestantes(j.restantes ?? 0)
+
+        // Instalada como app (PWA): pedir el correo para continuar.
+        const standalone =
+          window.matchMedia("(display-mode: standalone)").matches ||
+          // @ts-expect-error iOS Safari
+          window.navigator.standalone === true
+        if (standalone && j.estado !== "registrado") {
+          setFase(j.estado === "regresa_sin_registro" ? "yaregistrado" : "datos")
+          setMuro(true)
+        }
       } catch {
         /* sin BD: cae a límite anónimo por defecto */
       }
@@ -272,111 +282,131 @@ export function Calculator() {
 
   return (
     <div className="mx-auto w-full max-w-3xl">
-      {/* Encabezado + badge de cuota */}
-      <header className="mb-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
-            <Mountain className="size-5" />
+      {/* Encabezado tipo app: logo + cuota */}
+      <header className="mb-6 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_0_20px_-4px] shadow-primary/60">
+            <Zap className="size-5 fill-current" />
           </span>
-          <h1 className="heading-display text-3xl text-foreground sm:text-4xl">Calculadora de autonomía</h1>
+          <div className="leading-none">
+            <span className="font-heading block text-lg font-bold uppercase tracking-tight text-foreground">Cumbreva</span>
+            <span className="text-[11px] text-muted-foreground">Autonomía real</span>
+          </div>
         </div>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Calcula si tu batería <span className="text-foreground">realmente alcanza</span> entre dos puntos. Modelo físico
-          por tramo: pendiente, velocidad según la vía, aerodinámica, clima por altitud y regeneración en bajadas. La
-          montaña colombiana cobra su parte.
-        </p>
         <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
       </header>
 
-      {/* Ruta */}
-      <section className={cn(card, "mb-4")}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <CampoLugar label="Origen" dot="bg-primary" value={origen} onChange={onO} placeholder="Ej. Bogotá" sugerencias={sugO} onPick={(s) => { setOrigen(s.label); setOrigenSel(s); setSugO([]) }} />
-          <CampoLugar label="Destino" dot="bg-amber-400" value={destino} onChange={onD} placeholder="Ej. Girardot" sugerencias={sugD} onPick={(s) => { setDestino(s.label); setDestinoSel(s); setSugD([]) }} />
-        </div>
-      </section>
+      {res ? (
+        /* ---- Vista de resultado (como pantalla de app) ---- */
+        <div>
+          <button
+            onClick={() => setRes(null)}
+            className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="size-4" /> Nueva búsqueda
+          </button>
+          <section className={cn("rounded-2xl border bg-card p-5 sm:p-6", res.alcanza ? "border-border" : "border-destructive/50")}>
+            <div className="mb-2 text-xs font-medium text-muted-foreground">
+              {origen.split(",")[0]} → {destino.split(",")[0]}
+            </div>
+            <div className={cn("mb-4 flex items-center gap-2 text-base font-bold", res.alcanza ? "text-primary" : "text-destructive")}>
+              <span className="text-xl">{res.alcanza ? "✓" : "⚠"}</span>
+              {res.alcanza
+                ? `Alcanzas con ${Math.round(res.pctLlegada)}% de margen`
+                : `No alcanza — te quedarías a ${Math.round(res.distKm - res.kmAlcance)} km del destino`}
+            </div>
 
-      {/* Vehículo */}
-      <section className={cn(card, "mb-4")}>
-        <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          <Zap className="size-4 text-primary" /> Tu vehículo eléctrico
+            <MedidorBateria pct={res.pctLlegada} alcanza={res.alcanza} kmAlcance={res.kmAlcance} distKm={res.distKm} />
+
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <Stat label="Distancia real" value={`${Math.round(res.distKm)} km`} sub={`${Math.round(res.durMin)} min en vía`} />
+              <Stat label="Autonomía real" value={`${Math.round(res.kmAlcance)} km`} sub={`con ${bateria}% de carga`} />
+              <Stat label="Consumo corregido" value={`${Math.round(res.consumoReal)}`} sub={`Wh/km · +${Math.round(res.penaliz)}% vs catálogo`} />
+              <Stat label="Desnivel acumulado" value={`+${Math.round(res.perfil.asc)} m`} sub={`baja ${Math.round(res.perfil.desc)} m`} />
+            </div>
+
+            <div className="mt-5">
+              <div className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                A dónde se va la energía · vel. media ~{Math.round(res.velMedia)} km/h
+              </div>
+              <Desglose res={res} />
+            </div>
+
+            <div className="mt-5">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Mapa de la ruta · {Math.round(res.distKm)} km
+              </div>
+              <MapaRuta coords={res.coords} distKm={res.distKm} alcanza={res.alcanza} kmAlcance={res.kmAlcance} origen={origen} destino={destino} />
+            </div>
+
+            <div className="mt-5">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Perfil de elevación · {Math.round(res.perfil.min)}–{Math.round(res.perfil.max)} m
+              </div>
+              <PerfilSVG coords={res.coords} />
+            </div>
+
+            <p className="mt-4 text-xs leading-relaxed text-muted-foreground/70">
+              Estimación · datos de {res.fuente}. El consumo real también depende de velocidad, clima, aire acondicionado,
+              carga y estilo de conducción. Deja siempre un margen de seguridad antes de viajar.
+            </p>
+          </section>
+          <Button size="lg" onClick={() => setRes(null)} variant="outline" className="mt-4 h-12 w-full font-semibold">
+            Calcular otra ruta
+          </Button>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Modelo</label>
-            <select
-              value={evId}
-              onChange={(e) => setEvId(e.target.value)}
-              className={cn(inputBase, "[&>option]:bg-card [&>option]:text-foreground")}
+      ) : (
+        /* ---- Vista de formulario (botón sticky abajo) ---- */
+        <>
+          {/* Ruta */}
+          <section className={cn(card, "mb-4")}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <CampoLugar label="Origen" dot="bg-primary" value={origen} onChange={onO} placeholder="Ej. Bogotá" sugerencias={sugO} onPick={(s) => { setOrigen(s.label); setOrigenSel(s); setSugO([]) }} />
+              <CampoLugar label="Destino" dot="bg-amber-400" value={destino} onChange={onD} placeholder="Ej. Girardot" sugerencias={sugD} onPick={(s) => { setDestino(s.label); setDestinoSel(s); setSugD([]) }} />
+            </div>
+          </section>
+
+          {/* Vehículo */}
+          <section className={cn(card, "mb-3")}>
+            <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <Zap className="size-4 text-primary" /> Tu vehículo eléctrico
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">Modelo</label>
+                <select
+                  value={evId}
+                  onChange={(e) => setEvId(e.target.value)}
+                  className={cn(inputBase, "[&>option]:bg-card [&>option]:text-foreground")}
+                >
+                  {EV_CATALOG.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.marca} {e.modelo !== "—" ? e.modelo : ""} {e.id !== "custom" ? `· ${e.kwh} kWh` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <NumField label="Capacidad batería" unit="kWh" value={kwh} onChange={setKwh} step={0.5} />
+              <NumField label="Consumo nominal" unit="Wh/km" value={whkm} onChange={setWhkm} step={1} />
+              <NumField label="Peso del vehículo" unit="kg" value={masa} onChange={setMasa} step={50} />
+              <NumField label="Carga actual" unit="%" value={bateria} onChange={setBateria} step={5} max={100} />
+            </div>
+          </section>
+
+          {error && <p className="mb-2 text-sm text-destructive">{error}</p>}
+
+          {/* Botón Calcular — sticky en la parte baja (app) */}
+          <div className="sticky bottom-3 z-20 pt-2">
+            <Button
+              size="lg"
+              onClick={calcular}
+              disabled={cargando}
+              className="h-14 w-full rounded-2xl text-base font-semibold shadow-xl shadow-primary/25"
             >
-              {EV_CATALOG.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.marca} {e.modelo !== "—" ? e.modelo : ""} {e.id !== "custom" ? `· ${e.kwh} kWh` : ""}
-                </option>
-              ))}
-            </select>
+              {cargando ? <><Loader2 className="size-4 animate-spin" /> {botonTexto}</> : botonTexto}
+            </Button>
           </div>
-          <NumField label="Capacidad batería" unit="kWh" value={kwh} onChange={setKwh} step={0.5} />
-          <NumField label="Consumo nominal" unit="Wh/km" value={whkm} onChange={setWhkm} step={1} />
-          <NumField label="Peso del vehículo" unit="kg" value={masa} onChange={setMasa} step={50} />
-          <NumField label="Carga actual" unit="%" value={bateria} onChange={setBateria} step={5} max={100} />
-        </div>
-        <Button
-          size="lg"
-          onClick={calcular}
-          disabled={cargando}
-          className="mt-5 h-13 w-full text-base font-semibold"
-        >
-          {cargando ? <><Loader2 className="size-4 animate-spin" /> {botonTexto}</> : botonTexto}
-        </Button>
-        {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
-      </section>
-
-      {/* Resultado */}
-      {res && (
-        <section className={cn("rounded-2xl border bg-card p-5 sm:p-6", res.alcanza ? "border-border" : "border-destructive/50")}>
-          <div className={cn("mb-4 flex items-center gap-2 text-base font-bold", res.alcanza ? "text-primary" : "text-destructive")}>
-            <span className="text-xl">{res.alcanza ? "✓" : "⚠"}</span>
-            {res.alcanza
-              ? `Alcanzas con ${Math.round(res.pctLlegada)}% de margen`
-              : `No alcanza — te quedarías a ${Math.round(res.distKm - res.kmAlcance)} km del destino`}
-          </div>
-
-          <MedidorBateria pct={res.pctLlegada} alcanza={res.alcanza} kmAlcance={res.kmAlcance} distKm={res.distKm} />
-
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Stat label="Distancia real" value={`${Math.round(res.distKm)} km`} sub={`${Math.round(res.durMin)} min en vía`} />
-            <Stat label="Autonomía real" value={`${Math.round(res.kmAlcance)} km`} sub={`con ${bateria}% de carga`} />
-            <Stat label="Consumo corregido" value={`${Math.round(res.consumoReal)}`} sub={`Wh/km · +${Math.round(res.penaliz)}% vs catálogo`} />
-            <Stat label="Desnivel acumulado" value={`+${Math.round(res.perfil.asc)} m`} sub={`baja ${Math.round(res.perfil.desc)} m`} />
-          </div>
-
-          <div className="mt-5">
-            <div className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              A dónde se va la energía · vel. media ~{Math.round(res.velMedia)} km/h
-            </div>
-            <Desglose res={res} />
-          </div>
-
-          <div className="mt-5">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Mapa de la ruta · {Math.round(res.distKm)} km
-            </div>
-            <MapaRuta coords={res.coords} distKm={res.distKm} alcanza={res.alcanza} kmAlcance={res.kmAlcance} origen={origen} destino={destino} />
-          </div>
-
-          <div className="mt-5">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Perfil de elevación · {Math.round(res.perfil.min)}–{Math.round(res.perfil.max)} m
-            </div>
-            <PerfilSVG coords={res.coords} />
-          </div>
-
-          <p className="mt-4 text-xs leading-relaxed text-muted-foreground/70">
-            Estimación · datos de {res.fuente}. El consumo real también depende de velocidad, clima, aire acondicionado,
-            carga y estilo de conducción. Deja siempre un margen de seguridad antes de viajar.
-          </p>
-        </section>
+        </>
       )}
 
       {/* Muro de registro */}
@@ -384,12 +414,17 @@ export function Calculator() {
         <Modal onClose={() => { if (!enviando && fase === "datos") setMuro(false) }}>
           {fase === "datos" && (
             <>
-              <Eyebrow>Acceso · Cumbreva</Eyebrow>
+              <div className="mb-4 flex items-center gap-2.5">
+                <span className="flex size-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_0_24px_-4px] shadow-primary/60">
+                  <Zap className="size-6 fill-current" />
+                </span>
+                <span className="font-heading text-xl font-bold uppercase tracking-tight text-foreground">Cumbreva</span>
+              </div>
               <h2 className="mb-2 text-xl font-bold leading-tight text-foreground">
-                Probaste tus búsquedas gratis. Regístrate para 7 diarias
+                Ingresa tu correo para continuar
               </h2>
               <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
-                Verifica tu correo con un código y sigue usando la calculadora con acceso anticipado a Cumbreva.
+                Te enviamos un código para activar tus 7 búsquedas diarias gratis y guardar tu historial.
               </p>
               <div className="flex flex-col gap-3">
                 <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" className={inputBase} />
@@ -499,14 +534,14 @@ function CuotaBadge({ registrado, restantes, limite }: { registrado: boolean; re
   return (
     <div
       className={cn(
-        "mt-4 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs",
+        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs",
         agotada ? "border-amber-400/50 bg-amber-400/10 text-amber-300" : "border-primary/40 bg-primary/10 text-primary",
       )}
     >
       <span className={cn("size-2 rounded-full", agotada ? "bg-amber-400" : "bg-primary")} />
       {agotada
-        ? registrado ? "Cuota de hoy agotada · vuelve mañana" : "Búsquedas gratis agotadas · regístrate"
-        : `${restantes} de ${limite} búsquedas ${registrado ? "hoy" : "gratis"}`}
+        ? registrado ? "Sin cuota hoy" : "Regístrate"
+        : `${restantes}/${limite} ${registrado ? "hoy" : "gratis"}`}
     </div>
   )
 }
