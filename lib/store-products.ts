@@ -1,5 +1,5 @@
 // Catálogo de la tienda Cumbreva (demo). Precios en COP.
-// Las compras son solo para Colombia; el pago real (Stripe) se integra después.
+// Las compras son solo para Colombia; el pago real (Mercado Pago / ePayco) se integra después.
 
 export type Producto = {
   id: string
