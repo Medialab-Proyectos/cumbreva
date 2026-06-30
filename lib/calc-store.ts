@@ -45,6 +45,18 @@ export type Busqueda = {
   ts: number
 }
 
+export type Feedback = {
+  mensaje: string
+  origen?: string
+  destino?: string
+  completado?: boolean
+  ts: number
+}
+
+/** Al llegar a este número de feedbacks se avisa al admin (no sube cuota solo). */
+export const FEEDBACK_ALERTA = 20
+const FB_MAX = 60
+
 export function kvConfigured(): boolean {
   return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
 }
@@ -265,6 +277,42 @@ export async function historial(email: string): Promise<Busqueda[]> {
   if (!kv) return []
   try {
     const raw = await kv.lrange<string | Busqueda>(`calc:hist:${normalizeEmail(email)}`, 0, HIST_MAX - 1)
+    return raw.map((r) => (typeof r === "string" ? JSON.parse(r) : r))
+  } catch {
+    return []
+  }
+}
+
+// ---- Feedback --------------------------------------------------------------
+/**
+ * Guarda un feedback y suma 1 al contador del usuario. Devuelve el total y si
+ * con este se alcanzó el umbral de alerta (para avisar al admin manualmente).
+ */
+export async function registrarFeedback(
+  email: string,
+  fb: Feedback,
+): Promise<{ total: number; alerta: boolean }> {
+  const kv = await getKv()
+  if (!kv) return { total: 0, alerta: false }
+  try {
+    const e = normalizeEmail(email)
+    const key = `calc:fb:${e}`
+    await kv.lpush(key, JSON.stringify(fb))
+    await kv.ltrim(key, 0, FB_MAX - 1)
+    const prev = await getUser(e)
+    const total = (prev?.feedbacks ?? 0) + 1
+    await upsertUser(e, { feedbacks: total })
+    return { total, alerta: total === FEEDBACK_ALERTA }
+  } catch {
+    return { total: 0, alerta: false }
+  }
+}
+
+export async function feedbacks(email: string): Promise<Feedback[]> {
+  const kv = await getKv()
+  if (!kv) return []
+  try {
+    const raw = await kv.lrange<string | Feedback>(`calc:fb:${normalizeEmail(email)}`, 0, FB_MAX - 1)
     return raw.map((r) => (typeof r === "string" ? JSON.parse(r) : r))
   } catch {
     return []

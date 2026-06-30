@@ -14,8 +14,8 @@ export function SiteHeader() {
           <a href="#funciones" className="transition-colors hover:text-foreground">
             Funciones
           </a>
-          <a href="#app" className="transition-colors hover:text-foreground">
-            La app
+          <a href="/calculadora" className="transition-colors hover:text-foreground">
+            Calculadora
           </a>
           <a href="#faq" className="transition-colors hover:text-foreground">
             Preguntas
@@ -23,6 +23,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2.5">
+          <a
+            href="/cuenta"
+            className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline"
+          >
+            Mi cuenta
+          </a>
           <a
             href="#lista-espera"
             className={cn(

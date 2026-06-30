@@ -30,6 +30,37 @@ export function otpEmailHtml(codigo: string, nombre?: string): string {
   </div>`
 }
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || BRAND.email
+
+/**
+ * Avisa al administrador cuando un usuario alcanza el umbral de feedbacks.
+ * El admin decide MANUALMENTE si le sube la cuota (no es automático).
+ */
+export async function notificarAdminFeedback(
+  email: string,
+  total: number,
+  ultimoMensaje: string,
+): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return
+  const { Resend } = await import("resend")
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: [ADMIN_EMAIL],
+    subject: `Cumbreva · ${email} llegó a ${total} feedbacks — ¿subir cuota?`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:520px;margin:0 auto;color:#222">
+      <h2 style="color:#0a8a3a">Usuario activo en la calculadora</h2>
+      <p><strong>${email}</strong> acumuló <strong>${total}</strong> feedbacks usando Cumbreva.</p>
+      <p>Revisa que su información tenga sentido y validez. Si aplica, súbele la cuota
+      diaria manualmente (campo <code>cuotaExtra</code> del usuario en KV).</p>
+      <blockquote style="border-left:3px solid #36ff7a;padding-left:12px;color:#555">
+        Último mensaje: ${ultimoMensaje || "(sin texto)"}
+      </blockquote>
+    </div>`,
+  })
+}
+
 /**
  * Envía el OTP. Devuelve true si se envió por correo, false en modo demo
  * (sin RESEND_API_KEY) — en ese caso el endpoint revela el código en la respuesta.

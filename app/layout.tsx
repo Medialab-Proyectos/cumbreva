@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Oswald } from "next/font/google"
+import { PwaRegister } from "@/components/pwa-register"
 import { BRAND, SITE_URL } from "@/lib/site"
 import "./globals.css"
 
@@ -112,6 +113,7 @@ export default function RootLayout({
     >
       <body className="bg-background font-sans antialiased">
         {children}
+        <PwaRegister />
         <Analytics />
       </body>
     </html>
