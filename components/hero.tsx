@@ -1,6 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
 import { CalendarCheck, Check, Mountain } from "lucide-react"
+import { OpenCalculatorButton } from "@/components/calculadora/open-calculator-button"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -48,8 +48,7 @@ export function Hero() {
               <CalendarCheck className="size-5" />
               Unirme a la lista
             </a>
-            <Link
-              href="/calculadora"
+            <OpenCalculatorButton
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
                 "h-13 border-primary/40 bg-background/40 px-7 text-base font-semibold backdrop-blur hover:bg-primary/10",
@@ -57,7 +56,7 @@ export function Hero() {
             >
               <Mountain className="size-5 text-primary" />
               Probar la calculadora gratis
-            </Link>
+            </OpenCalculatorButton>
           </div>
 
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 sm:mt-9">
