@@ -6,6 +6,7 @@ import { Hero } from "@/components/hero"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { StatsBand } from "@/components/stats-band"
+import { StoreTeaser } from "@/components/store-teaser"
 import { StructuredData } from "@/components/structured-data"
 import { WaitlistSection } from "@/components/waitlist-section"
 import { WhatsAppBanner } from "@/components/whatsapp-banner"
@@ -21,6 +22,7 @@ export default function Page() {
         <BrandMarquee />
         <Features />
         <AppShowcase />
+        <StoreTeaser />
         <WaitlistSection />
         <Faq />
       </main>

@@ -15,9 +15,10 @@ import { MapaRuta, MedidorBateria, PerfilSVG } from "@/components/calculadora/ba
 type Punto = { label: string; lat: number; lng: number; elev?: number }
 type Fase = "datos" | "yaregistrado" | "otp" | "ok"
 
-const card = "rounded-2xl border border-border bg-card p-5 sm:p-6"
+// Estilo "app": secciones livianas y campos abiertos (subrayado), no cajitas.
+const card = "rounded-2xl border border-border/50 bg-card/40 p-5 sm:p-7"
 const inputBase =
-  "w-full rounded-xl border border-border bg-background/50 px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-primary/60"
+  "w-full border-0 border-b-2 border-border bg-transparent px-0.5 py-2.5 text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/45 focus:border-primary"
 
 export function Calculator() {
   // Ruta
@@ -569,15 +570,15 @@ function NumField({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</label>
-      <div className="flex items-center rounded-xl border border-border bg-background/50 px-3 transition-colors focus-within:border-primary/60">
+      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</label>
+      <div className="flex items-center gap-2 border-b-2 border-border transition-colors focus-within:border-primary">
         <input
           type="number"
           value={value}
           step={step}
           max={max}
           onChange={(e) => onChange(Math.max(0, Number(e.target.value)))}
-          className="min-w-0 flex-1 bg-transparent py-3 text-sm text-foreground outline-none"
+          className="min-w-0 flex-1 bg-transparent py-2.5 text-lg text-foreground outline-none"
         />
         <span className="text-xs font-semibold text-muted-foreground/70">{unit}</span>
       </div>

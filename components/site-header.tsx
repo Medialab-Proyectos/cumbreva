@@ -17,6 +17,9 @@ export function SiteHeader() {
           <a href="/calculadora" className="transition-colors hover:text-foreground">
             Calculadora
           </a>
+          <a href="/tienda" className="transition-colors hover:text-foreground">
+            Tienda
+          </a>
           <a href="#faq" className="transition-colors hover:text-foreground">
             Preguntas
           </a>

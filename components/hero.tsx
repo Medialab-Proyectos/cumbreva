@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowDown, CalendarCheck, Check, Mountain } from "lucide-react"
+import { CalendarCheck, Check, Mountain } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -48,28 +48,17 @@ export function Hero() {
               <CalendarCheck className="size-5" />
               Unirme a la lista
             </a>
-            <a
-              href="#funciones"
+            <Link
+              href="/calculadora"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
-                "h-13 border-foreground/20 bg-background/40 px-7 text-base font-semibold backdrop-blur hover:bg-background/60",
+                "h-13 border-primary/40 bg-background/40 px-7 text-base font-semibold backdrop-blur hover:bg-primary/10",
               )}
             >
-              <ArrowDown className="size-5 text-primary" />
-              Conoce como funciona
-            </a>
+              <Mountain className="size-5 text-primary" />
+              Probar la calculadora gratis
+            </Link>
           </div>
-
-          <Link
-            href="/calculadora"
-            className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <span className="flex size-7 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
-              <Mountain className="size-3.5" />
-            </span>
-            Prueba gratis la calculadora de autonomía real
-            <ArrowDown className="size-4 -rotate-90 text-primary transition-transform group-hover:translate-x-0.5" />
-          </Link>
 
           <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-3 sm:mt-9">
             {benefits.map((benefit) => (
