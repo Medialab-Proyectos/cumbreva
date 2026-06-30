@@ -11,10 +11,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const nombre = String(body.nombre ?? "").trim()
     const email = String(body.email ?? "").trim()
+    const ciudad = String(body.ciudad ?? "").trim()
     const vehiculo = String(body.vehiculo ?? "").trim()
     const otraMarca = String(body.otraMarca ?? "").trim()
-    const kilometros = String(body.kilometros ?? "").trim()
-    const comentario = String(body.comentario ?? "").trim()
+    const cargadorCasa = String(body.cargadorCasa ?? "").trim()
+    const rutaPreocupa = String(body.rutaPreocupa ?? "").trim()
 
     if (!email || !EMAIL_RE.test(email)) {
       return NextResponse.json(
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     const vehiculoLabel =
       vehiculo === "Otra marca" && otraMarca ? otraMarca : vehiculo || "No especificado"
 
-    const lead: WaitlistLead = { nombre, email, vehiculoLabel, kilometros, comentario }
+    const lead: WaitlistLead = { nombre, email, ciudad, vehiculoLabel, cargadorCasa, rutaPreocupa }
 
     // Sin proveedor de correo configurado → modo demo (no falla la UI).
     if (!process.env.RESEND_API_KEY) {

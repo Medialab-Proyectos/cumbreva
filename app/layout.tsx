@@ -18,9 +18,9 @@ const oswald = Oswald({
   weight: ["500", "600", "700"],
 })
 
-const title = "Cumbreva | Calculadora y app para carro electrico en Colombia"
+const title = "Cumbreva | Calcula si llegas en carro electrico"
 const description =
-  "Cumbreva te ayuda a saber si te alcanza la bateria, donde cargar tu carro electrico y como planear rutas con carga en Colombia. Calculadora de autonomia real, electrolineras y control del vehiculo en una sola app."
+  "No adivines la autonomia. Antes de salir, calcula si tu carro electrico llega con la bateria actual, la ruta real y la montana colombiana."
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -52,9 +52,9 @@ export const metadata: Metadata = {
     "bateria vehiculo electrico",
     "ansiedad de carga",
   ],
-  authors: [{ name: BRAND.company, url: BRAND.companyUrl }],
-  creator: BRAND.company,
-  publisher: BRAND.company,
+  authors: [{ name: BRAND.name, url: SITE_URL }],
+  creator: BRAND.name,
+  publisher: BRAND.name,
   category: "technology",
   alternates: {
     canonical: "/",
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1731,
         height: 909,
-        alt: "Cumbreva, app para carro electrico: maneja electrico sin ansiedad de carga",
+        alt: "Cumbreva: calcula si llegas antes de salir en carro electrico",
       },
     ],
   },
@@ -97,8 +97,14 @@ export const metadata: Metadata = {
       { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
       { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+      { url: "/icon.svg", type: "image/svg+xml" },
     ],
     apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    title: BRAND.name,
+    capable: true,
+    statusBarStyle: "black-translucent",
   },
 }
 

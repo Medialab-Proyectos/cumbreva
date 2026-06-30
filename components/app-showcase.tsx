@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils"
 const points = [
   "Bateria y autonomia real en tiempo real",
   "Rutas optimizadas con paradas de carga",
-  "Electrolineras y contexto de carga en una sola vista",
-  "Documentos del vehiculo siempre a la mano",
+  "Puntos de carga y contexto de ruta en una sola vista",
+  "Historial de rutas y comentarios para aprender de cada viaje",
 ]
 
 export function AppShowcase() {
@@ -30,7 +30,7 @@ export function AppShowcase() {
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
           Sin tecnicismos y sin promesas infladas. Cumbreva te muestra lo importante para
-          conducir, cargar y organizar tu vehiculo electrico con menos friccion.
+          conducir, cargar y decidir si llegas con menos friccion.
         </p>
 
         <ul className="mx-auto mt-10 flex max-w-md flex-col gap-3 text-left">

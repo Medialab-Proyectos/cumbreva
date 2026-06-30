@@ -18,9 +18,10 @@ const C = {
 export type WaitlistLead = {
   nombre?: string
   email: string
+  ciudad?: string
   vehiculoLabel: string
-  kilometros?: string
-  comentario?: string
+  cargadorCasa?: string
+  rutaPreocupa?: string
 }
 
 // Escape básico para no romper el HTML ni permitir inyección desde el form.
@@ -37,7 +38,7 @@ const host = SITE_URL.replace(/^https?:\/\//, "")
 
 // ── Correo interno (lead que te llega a ti) ──
 export function adminEmailHtml(lead: WaitlistLead, timestamp: string): string {
-  const { nombre, email, vehiculoLabel, kilometros, comentario } = lead
+  const { nombre, email, ciudad, vehiculoLabel, cargadorCasa, rutaPreocupa } = lead
   return `<!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
@@ -69,9 +70,10 @@ export function adminEmailHtml(lead: WaitlistLead, timestamp: string): string {
     <div class="tag">Lead · Lista de espera</div>
     ${nombre ? `<div class="field"><div class="field-label">Nombre</div><div class="field-value">${esc(nombre)}</div></div>` : ""}
     <div class="field"><div class="field-label">Correo</div><div class="field-value">${esc(email)}</div></div>
-    <div class="field"><div class="field-label">Vehículo</div><div class="field-value">${esc(vehiculoLabel)}</div></div>
-    ${kilometros ? `<div class="field"><div class="field-label">Kilómetros</div><div class="field-value">${esc(kilometros)} km</div></div>` : ""}
-    ${comentario ? `<div class="field"><div class="field-label">Comentario / problema</div><div class="field-value">${esc(comentario)}</div></div>` : ""}
+    ${ciudad ? `<div class="field"><div class="field-label">Ciudad</div><div class="field-value">${esc(ciudad)}</div></div>` : ""}
+    <div class="field"><div class="field-label">Carro eléctrico</div><div class="field-value">${esc(vehiculoLabel)}</div></div>
+    ${cargadorCasa ? `<div class="field"><div class="field-label">¿Cargador en casa?</div><div class="field-value">${esc(cargadorCasa)}</div></div>` : ""}
+    ${rutaPreocupa ? `<div class="field"><div class="field-label">Ruta que más le preocupa</div><div class="field-value">${esc(rutaPreocupa)}</div></div>` : ""}
   </div>
   <div class="footer"><a href="${SITE_URL}">${esc(host)}</a> &nbsp;·&nbsp; ${esc(BRAND.company)} · Bogotá, Colombia</div>
 </div>

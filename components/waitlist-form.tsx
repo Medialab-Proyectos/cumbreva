@@ -4,10 +4,11 @@ import { useState, type FormEvent } from "react"
 import {
   Car,
   CheckCircle2,
-  Gauge,
   Loader2,
   Mail,
-  MessageSquare,
+  MapPin,
+  PlugZap,
+  Route,
   User,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -18,10 +19,11 @@ type Status = "idle" | "loading" | "success" | "error"
 const initialForm = {
   nombre: "",
   email: "",
+  ciudad: "",
   vehiculo: "",
   otraMarca: "",
-  kilometros: "",
-  comentario: "",
+  cargadorCasa: "",
+  rutaPreocupa: "",
 }
 
 // Marcas eléctricas más comunes en Colombia para el desplegable.
@@ -124,7 +126,7 @@ export function WaitlistForm({ className }: { className?: string }) {
           />
         </Field>
 
-        <Field icon={<Mail className="size-3.5" />} label="Correo electrónico" htmlFor="email" className="sm:col-span-2">
+        <Field icon={<Mail className="size-3.5" />} label="Correo electrónico" htmlFor="email">
           <input
             id="email"
             type="email"
@@ -136,7 +138,18 @@ export function WaitlistForm({ className }: { className?: string }) {
           />
         </Field>
 
-        <Field icon={<Car className="size-3.5" />} label="¿Qué vehículo tienes?" htmlFor="vehiculo" className={form.vehiculo === "Otra marca" ? "" : "sm:col-span-2"}>
+        <Field icon={<MapPin className="size-3.5" />} label="¿En qué ciudad estás?" htmlFor="ciudad">
+          <input
+            id="ciudad"
+            required
+            value={form.ciudad}
+            onChange={update("ciudad")}
+            placeholder="Ej. Bogotá"
+            className={inputBase}
+          />
+        </Field>
+
+        <Field icon={<Car className="size-3.5" />} label="¿Qué carro eléctrico tienes?" htmlFor="vehiculo" className={form.vehiculo === "Otra marca" ? "" : "sm:col-span-2"}>
           <select
             id="vehiculo"
             value={form.vehiculo}
@@ -144,7 +157,7 @@ export function WaitlistForm({ className }: { className?: string }) {
             className={cn(inputBase, "[&>option]:bg-card [&>option]:text-foreground")}
           >
             <option value="" disabled>
-              Selecciona tu marca
+              Selecciona tu marca / modelo
             </option>
             {vehiculos.map((v) => (
               <option key={v} value={v}>
@@ -155,39 +168,42 @@ export function WaitlistForm({ className }: { className?: string }) {
         </Field>
 
         {form.vehiculo === "Otra marca" && (
-          <Field icon={<Car className="size-3.5" />} label="¿Cuál es tu marca?" htmlFor="otraMarca">
+          <Field icon={<Car className="size-3.5" />} label="¿Cuál es tu carro?" htmlFor="otraMarca">
             <input
               id="otraMarca"
               required
               value={form.otraMarca}
               onChange={update("otraMarca")}
-              placeholder="Ej. Tesla, Seres…"
+              placeholder="Ej. Tesla Model 3, Seres 3…"
               className={inputBase}
             />
           </Field>
         )}
 
-        <Field icon={<Gauge className="size-3.5" />} label="Kilómetros (opcional)" htmlFor="kilometros" className="sm:col-span-2">
-          <input
-            id="kilometros"
-            type="number"
-            min={0}
-            inputMode="numeric"
-            value={form.kilometros}
-            onChange={update("kilometros")}
-            placeholder="Ej. 25000"
-            className={inputBase}
-          />
+        <Field icon={<PlugZap className="size-3.5" />} label="¿Tienes cargador en casa?" htmlFor="cargadorCasa" className="sm:col-span-2">
+          <select
+            id="cargadorCasa"
+            required
+            value={form.cargadorCasa}
+            onChange={update("cargadorCasa")}
+            className={cn(inputBase, "[&>option]:bg-card [&>option]:text-foreground")}
+          >
+            <option value="" disabled>
+              Selecciona una opción
+            </option>
+            <option value="Sí">Sí, cargo en casa</option>
+            <option value="No">No, cargo fuera</option>
+            <option value="Pronto">Aún no, pero pienso instalarlo</option>
+          </select>
         </Field>
 
-        <Field icon={<MessageSquare className="size-3.5" />} label="Comentario (opcional)" htmlFor="comentario" className="sm:col-span-2">
-          <textarea
-            id="comentario"
-            rows={3}
-            value={form.comentario}
-            onChange={update("comentario")}
-            placeholder="Cuéntanos qué te gustaría resolver con Cumbreva…"
-            className={cn(inputBase, "resize-none")}
+        <Field icon={<Route className="size-3.5" />} label="¿Qué ruta te preocupa más?" htmlFor="rutaPreocupa" className="sm:col-span-2">
+          <input
+            id="rutaPreocupa"
+            value={form.rutaPreocupa}
+            onChange={update("rutaPreocupa")}
+            placeholder="Ej. Bogotá → Melgar, o subir a un páramo"
+            className={inputBase}
           />
         </Field>
       </div>

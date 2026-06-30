@@ -1,11 +1,11 @@
 export const faqs = [
   {
     q: "Que es Cumbreva?",
-    a: "Cumbreva es una app para carro electrico que reune bateria, autonomia, rutas con carga, electrolineras y documentos del vehiculo en un solo lugar.",
+    a: "Cumbreva es un copiloto electrico para Colombia: antes de salir, te ayuda a calcular si llegas con tu bateria actual, tu ruta real y el terreno que vas a manejar.",
   },
   {
     q: "Que problemas ayuda a resolver?",
-    a: "Ayuda a reducir la ansiedad de carga, entender mejor la autonomia real, ubicar puntos de carga y mantener ordenada la informacion del vehiculo para el uso diario.",
+    a: "Ayuda a dejar de adivinar la autonomia, planear carretera con margen, decidir si debes cargar antes y entender mejor como cambia el consumo en montana, calor o trayectos largos.",
   },
   {
     q: "Cumbreva controla o repara la bateria del vehiculo?",
@@ -13,7 +13,7 @@ export const faqs = [
   },
   {
     q: "Sirve para planear rutas y saber donde cargar?",
-    a: "Si. Una de sus funciones principales es ayudarte a revisar la autonomia disponible y planear rutas con paradas de carga mas razonables segun el trayecto.",
+    a: "Si. Puedes revisar si tu bateria alcanza para una ruta concreta y usar esa informacion para decidir si sales, cargas antes o buscas una parada con mas margen.",
   },
   {
     q: "Cuando estara disponible?",
@@ -38,8 +38,8 @@ export function Faq() {
           Preguntas frecuentes
         </h2>
         <p className="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground">
-          Respuestas directas sobre autonomia, carga, bateria y uso diario de una app
-          para vehiculos electricos en Colombia.
+          Respuestas directas para saber si llegas, cuando cargar y como planear
+          mejor tus rutas electricas en Colombia.
         </p>
       </div>
       <div className="divide-y divide-border rounded-2xl border border-border bg-card">

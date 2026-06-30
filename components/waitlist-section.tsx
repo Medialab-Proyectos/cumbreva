@@ -53,7 +53,7 @@ export function WaitlistSection() {
               />
             </div>
 
-            <ul className="mt-5 grid flex-1 grid-cols-3 grid-rows-1 gap-3">
+            <ul className="mt-5 hidden flex-1 grid-cols-3 grid-rows-1 gap-3 sm:grid">
               {perks.map((perk) => (
                 <li
                   key={perk.title}

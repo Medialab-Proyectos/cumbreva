@@ -27,28 +27,37 @@ export function Hero() {
               className="flex size-2 rounded-full bg-primary shadow-[0_0_12px_2px] shadow-primary/60"
               aria-hidden="true"
             />
-            <span className="eyebrow text-xs text-primary">Lista de espera abierta</span>
+            <span className="eyebrow text-xs text-primary">
+              Lista de espera abierta
+            </span>
           </div>
 
           <h1 className="heading-display mt-5 text-balance text-4xl text-foreground sm:mt-6 sm:text-6xl lg:text-6xl xl:text-7xl">
-            Maneja un electrico sin <span className="text-primary">ansiedad de carga</span>
+            Maneja electrico sin{" "}
+            <span className="text-primary">ansiedad de carga</span>
           </h1>
 
           <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
-            Cumbreva es <span className="font-semibold text-foreground">tu copiloto electrico</span>:
-            revisa si te alcanza la bateria, planea una ruta con carga y encuentra donde cargar tu carro electrico
-            en Colombia desde una sola app.
+            Cumbreva es{" "}
+            <span className="font-semibold text-foreground">
+              tu copiloto electrico
+            </span>
+            : antes de salir, calcula si llegas con la bateria actual, la ruta
+            real y la montana colombiana.
           </p>
 
-          <p className="mt-3 max-w-xl text-sm font-medium text-foreground/80 sm:text-base">
-            Para quienes buscan respuestas concretas: cuanto dura la bateria, donde cargar y como planear una ruta
-            larga sin adivinar.
+          <p className="mt-3 hidden max-w-xl text-sm font-medium text-foreground/80 sm:block sm:text-base">
+            No adivines la autonomia: revisa tu margen, decide si cargas antes
+            y planea carretera sin quedarte corto.
           </p>
 
           <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
             <a
               href="#lista-espera"
-              className={cn(buttonVariants({ size: "lg" }), "h-13 px-7 text-base font-semibold")}
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "h-13 px-7 text-base font-semibold",
+              )}
             >
               <CalendarCheck className="size-5" />
               Unirme a la lista
@@ -61,15 +70,21 @@ export function Hero() {
             >
               <Mountain className="size-5 text-primary" />
               Calcula tu ruta gratis
-              <span aria-hidden className="ml-0.5 align-super text-[0.7em] text-primary">*</span>
+              <span
+                aria-hidden
+                className="ml-0.5 align-super text-[0.7em] text-primary"
+              >
+                *
+              </span>
             </OpenCalculatorButton>
           </div>
 
           <p className="mt-3 max-w-md text-[11px] leading-relaxed text-muted-foreground/70">
-            *Prueba anticipada del calculo de rutas, basada en elevacion y terreno. En evaluacion.
+            *Prueba anticipada del calculo de rutas, basada en elevacion y
+            terreno. En evaluacion.
           </p>
 
-          <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 sm:mt-6">
+          <ul className="mt-5 hidden flex-wrap gap-x-5 gap-y-2 sm:mt-6 sm:flex">
             {benefits.map((benefit) => (
               <li
                 key={benefit}
@@ -89,7 +104,7 @@ export function Hero() {
           />
           <Image
             src="/cumbreva-app-mockup.png"
-            alt="Pantalla de la app Cumbreva mostrando bateria, autonomia y planeacion de ruta del vehiculo electrico"
+            alt="Pantalla de Cumbreva mostrando bateria, autonomia y planeacion de ruta electrica"
             width={649}
             height={1269}
             priority

@@ -6,9 +6,9 @@ import { CartButton } from "@/components/tienda/cart-button"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata: Metadata = {
-  title: "Tienda Cumbreva — camisetas, busos, tazas y peluches",
+  title: "Tienda Cumbreva — camisetas, hoodies, gorras, tazas y peluches",
   description:
-    "La tienda de Cumbreva: camisetas, busos, tazas y peluches para los pioneros de la movilidad electrica en Colombia.",
+    "La tienda de Cumbreva: camisetas, hoodies, gorras, tazas y peluches para los pioneros de la movilidad eléctrica en Colombia.",
   alternates: { canonical: "/tienda" },
 }
 

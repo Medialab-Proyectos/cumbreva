@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Check, ChevronDown, Copy, History, Loader2, LogOut, MapPin, MessageSquare, Share2, Star, Zap } from "lucide-react"
+import { Check, ChevronDown, Copy, History, Loader2, MapPin, MessageSquare, Share2, Star, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { SITE_URL } from "@/lib/site"
@@ -12,6 +12,8 @@ import {
   type Resultado,
 } from "@/lib/calc-physics"
 import { MapaRuta, MedidorBateria, PerfilSVG } from "@/components/calculadora/battery-meter"
+import { HideOnStandalone } from "@/components/hide-on-standalone"
+import { PwaInstallButton } from "@/components/pwa-install-button"
 
 type Punto = { label: string; lat: number; lng: number; elev?: number }
 type Fase = "datos" | "yaregistrado" | "otp" | "ok"
@@ -202,20 +204,6 @@ export function Calculator() {
       setFeedbackEnviando(false)
     }
   }, [destino, origen])
-
-  const cerrarSesion = useCallback(async () => {
-    await fetch("/api/calc/logout", { method: "POST" }).catch(() => {})
-    setRegistrado(false)
-    setNombre("")
-    setRes(null)
-    setTab("calcular")
-    setHistItems([])
-    setEmail("")
-    setOtpInput("")
-    setFase("datos")
-    setLimite(2)
-    setRestantes(2)
-  }, [])
 
   const buscarSug = (txt: string, set: (p: Punto[]) => void) => {
     if (txt.trim().length < 3) return set([])
@@ -440,17 +428,7 @@ export function Calculator() {
           <Eyebrow>Autonomia real</Eyebrow>
           <h1 className="font-heading text-2xl font-bold uppercase leading-none text-foreground">Planea tu ruta</h1>
         </div>
-        <div className="flex items-center gap-2">
-          <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
-          <button
-            type="button"
-            onClick={cerrarSesion}
-            className="inline-flex size-9 items-center justify-center rounded-lg border border-border bg-card/40 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-            aria-label="Cerrar sesion"
-          >
-            <LogOut className="size-4" />
-          </button>
-        </div>
+        <CuotaBadge registrado={registrado} restantes={restantes} limite={limite} />
       </header>
 
       <div className="sticky top-16 z-30 -mx-5 mb-5 grid grid-cols-2 gap-1 border-b border-border/60 bg-background/92 px-5 py-2 backdrop-blur-xl sm:-mx-8 sm:px-8">
@@ -530,14 +508,19 @@ export function Calculator() {
             </p>
           </section>
           <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/92 p-3 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-3xl gap-2">
-              <Button size="lg" onClick={() => setRes(null)} variant="outline" className="h-12 flex-1 font-semibold">
-                Calcular otra ruta
-              </Button>
-              <Button size="lg" onClick={compartirRegistro} className="h-12 px-4 font-semibold" aria-label="Compartir registro">
-                {shareState === "copied" ? <Copy className="size-4" /> : <Share2 className="size-4" />}
-                <span className="hidden sm:inline">{shareState === "copied" ? "Link copiado" : "Compartir"}</span>
-              </Button>
+            <div className="mx-auto max-w-3xl space-y-2">
+              <HideOnStandalone>
+                <PwaInstallButton className="h-11 w-full justify-center border-primary/40 bg-primary/10 text-sm font-semibold text-primary hover:bg-primary/20" />
+              </HideOnStandalone>
+              <div className="flex gap-2">
+                <Button size="lg" onClick={() => setRes(null)} variant="outline" className="h-12 flex-1 font-semibold">
+                  Calcular otra ruta
+                </Button>
+                <Button size="lg" onClick={compartirRegistro} className="h-12 px-4 font-semibold" aria-label="Compartir registro">
+                  {shareState === "copied" ? <Copy className="size-4" /> : <Share2 className="size-4" />}
+                  <span className="hidden sm:inline">{shareState === "copied" ? "Link copiado" : "Compartir"}</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -600,6 +583,17 @@ export function Calculator() {
           </section>
 
           {error && <p className="mb-2 text-sm text-destructive">{error}</p>}
+
+          {/* Descarga la app — solo en web, no dentro de la PWA instalada */}
+          <HideOnStandalone>
+            <div className="mt-6 flex flex-col items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-5 text-center sm:flex-row sm:justify-between sm:text-left">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Lleva la calculadora en tu celular</p>
+                <p className="text-xs text-muted-foreground">Instálala como app y úsala sin abrir el navegador.</p>
+              </div>
+              <PwaInstallButton className="h-10 shrink-0 px-5 text-sm" />
+            </div>
+          </HideOnStandalone>
 
           {/* Botón Calcular — sticky en la parte baja (app) */}
           <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/92 p-3 backdrop-blur-xl">
@@ -974,8 +968,9 @@ function HistorialView({
   onFeedback: (mensaje: string, contexto?: { origen?: string; destino?: string }) => Promise<boolean>
 }) {
   const [abierto, setAbierto] = useState<number | null>(null)
-  const [comentario, setComentario] = useState("")
-  const [enviado, setEnviado] = useState<number | null>(null)
+  const [comentarios, setComentarios] = useState<Record<number, string>>({})
+  const [guardados, setGuardados] = useState<Record<number, boolean>>({})
+  const [gracias, setGracias] = useState<number | null>(null)
 
   if (cargando) {
     return (
@@ -1020,22 +1015,27 @@ function HistorialView({
             <div className="mt-2 flex items-center justify-between gap-3">
               <button
                 type="button"
-                onClick={() => {
-                  setAbierto(abierto === i ? null : i)
-                  setComentario("")
-                }}
+                onClick={() => setAbierto(abierto === i ? null : i)}
                 className="inline-flex items-center gap-1.5 text-xs text-primary transition-colors hover:text-foreground"
               >
                 <MessageSquare className="size-3.5" />
                 Apoyar a otros con un comentario
               </button>
-              {enviado === i && <span className="text-xs text-primary">Comentario guardado</span>}
+              {guardados[i] && (
+                <span
+                  className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary"
+                  aria-label="Comentario guardado"
+                  title="Comentario guardado"
+                >
+                  <Check className="size-3.5" />
+                </span>
+              )}
             </div>
             {abierto === i && (
               <div className="mt-3">
                 <textarea
-                  value={comentario}
-                  onChange={(e) => setComentario(e.target.value)}
+                  value={comentarios[i] ?? ""}
+                  onChange={(e) => setComentarios((p) => ({ ...p, [i]: e.target.value }))}
                   placeholder="Ej. Esta ruta tiene subida fuerte saliendo de la ciudad..."
                   className="min-h-20 w-full resize-none rounded-lg border border-border bg-card/40 p-3 text-sm text-foreground outline-none placeholder:text-muted-foreground/50 focus:border-primary"
                 />
@@ -1043,14 +1043,22 @@ function HistorialView({
                   <Button
                     size="sm"
                     onClick={async () => {
-                      const ok = await onFeedback(comentario, { origen: b.origen, destino: b.destino })
+                      const texto = (comentarios[i] ?? "").trim()
+                      const ok = await onFeedback(texto, { origen: b.origen, destino: b.destino })
                       if (ok) {
-                        setEnviado(i)
+                        setGuardados((p) => ({ ...p, [i]: true }))
                         setAbierto(null)
-                        setComentario("")
+                        let total = 0
+                        try {
+                          total = Number(window.localStorage.getItem("cumbreva_sugerencias") || "0") + 1
+                          window.localStorage.setItem("cumbreva_sugerencias", String(total))
+                        } catch {
+                          total = Object.keys(guardados).length + 1
+                        }
+                        setGracias(total)
                       }
                     }}
-                    disabled={feedbackEnviando || !comentario.trim()}
+                    disabled={feedbackEnviando || !(comentarios[i] ?? "").trim()}
                     className="font-semibold"
                   >
                     {feedbackEnviando ? <Loader2 className="size-3.5 animate-spin" /> : null}
@@ -1065,6 +1073,29 @@ function HistorialView({
       <p className="mt-4 text-xs leading-relaxed text-muted-foreground/70">
         Tus comentarios ayudan a mejorar futuras recomendaciones y a orientar a otros usuarios en rutas similares.
       </p>
+
+      {gracias !== null && (
+        <Modal onClose={() => setGracias(null)}>
+          <div className="text-center">
+            <span className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-primary/15 text-primary">
+              <Check className="size-7" />
+            </span>
+            <h2 className="text-xl font-bold leading-tight text-foreground">¡Gracias por tu comentario!</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Llevas <span className="font-semibold text-foreground">{gracias}</span>{" "}
+              {gracias === 1 ? "sugerencia" : "sugerencias"}. Con{" "}
+              <span className="font-semibold text-foreground">15</span> desbloqueas más cuota semanal para seguir
+              calculando rutas.
+            </p>
+            {gracias < 15 && (
+              <p className="mt-3 text-xs text-muted-foreground/70">Te faltan {15 - gracias} para el siguiente nivel.</p>
+            )}
+            <Button onClick={() => setGracias(null)} className="mt-5 w-full font-semibold">
+              Aceptar
+            </Button>
+          </div>
+        </Modal>
+      )}
     </section>
   )
 }

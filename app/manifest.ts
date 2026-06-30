@@ -4,15 +4,15 @@ import { BRAND } from "@/lib/site"
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/calculadora",
-    name: `${BRAND.name} — Calculadora de autonomía`,
+    name: `${BRAND.name} - Calcula si llegas`,
     short_name: BRAND.name,
     description: BRAND.description,
     // La PWA es la calculadora (la app), no el sitio: al instalar abre aquí.
     start_url: "/calculadora",
     scope: "/",
     display: "standalone",
-    background_color: "#0a1410",
-    theme_color: "#0a1410",
+    background_color: "#000000",
+    theme_color: "#000000",
     lang: "es-CO",
     categories: ["travel", "navigation", "utilities"],
     icons: [

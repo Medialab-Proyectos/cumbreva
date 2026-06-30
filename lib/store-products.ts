@@ -10,6 +10,9 @@ export type Producto = {
   /** tallas disponibles (solo prendas). Si existe, hay que elegir una. */
   tallas?: string[]
   badge?: string
+  /** Cómo encaja la imagen en la caja: "contain" (prendas, no recorta) o
+   *  "cover" (gorra/peluche, llena la caja). Por defecto "contain". */
+  encaje?: "cover" | "contain"
 }
 
 export const PRODUCTOS: Producto[] = [
@@ -17,7 +20,7 @@ export const PRODUCTOS: Producto[] = [
     id: "camiseta",
     nombre: "Camiseta Cumbreva",
     precio: 99000,
-    descripcion: "Camiseta con grafica Cumbreva para quienes ruedan electrico.",
+    descripcion: "Camiseta con gráfica Cumbreva para quienes ruedan eléctrico.",
     imagenes: [
       "/tienda/camiseta%20(1).png",
       "/tienda/camiseta%20(2).png",
@@ -27,10 +30,10 @@ export const PRODUCTOS: Producto[] = [
     tallas: ["S", "M", "L", "XL"],
   },
   {
-    id: "buso",
-    nombre: "Buso Cumbreva",
+    id: "hoodie",
+    nombre: "Hoodie Cumbreva",
     precio: 189000,
-    descripcion: "Buso de la marca para trayectos frios, carga nocturna y carretera.",
+    descripcion: "Hoodie de la marca para trayectos fríos, carga nocturna y carretera.",
     imagenes: [
       "/tienda/buso%20(1).png",
       "/tienda/buso%20(2).png",
@@ -41,21 +44,31 @@ export const PRODUCTOS: Producto[] = [
     badge: "Nuevo",
   },
   {
-    id: "taza",
-    nombre: "Taza Cumbreva",
-    precio: 45000,
-    descripcion: "Taza para el cafe de ruta mientras planeas tu siguiente carga.",
+    id: "gorra",
+    nombre: "Gorra Cumbreva",
+    precio: 69000,
+    descripcion: "Gorra con el rayo Cumbreva bordado, para el sol de la ruta.",
     imagenes: [
-      "/tienda/taza%20(1).png",
       "/tienda/taza%20(2).png",
       "/tienda/taza%20(3).png",
       "/tienda/taza%20(4).png",
       "/tienda/taza%20(5).png",
+    ],
+    badge: "Nuevo",
+    encaje: "cover",
+  },
+  {
+    id: "taza",
+    nombre: "Taza Cumbreva",
+    precio: 45000,
+    descripcion: "Taza para el café de ruta mientras planeas tu siguiente carga.",
+    imagenes: [
+      "/tienda/taza%20(1).png",
       "/tienda/taza%20(6).png",
       "/tienda/taza%20(7).png",
       "/tienda/taza%20(8).png",
     ],
-    badge: "Mas vistas",
+    badge: "Más vista",
   },
   {
     id: "peluche",
@@ -63,6 +76,7 @@ export const PRODUCTOS: Producto[] = [
     precio: 79000,
     descripcion: "Peluche de la mascota Cumbreva para llevar la marca en el carro.",
     imagenes: ["/tienda/peluche.png"],
+    encaje: "cover",
   },
 ]
 

@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { PRODUCTOS, formatoCOP } from "@/lib/store-products"
+import { CarouselRow } from "@/components/ui/carousel-row"
+import { cn } from "@/lib/utils"
 
 /** Teaser de la tienda en el home (visible y responsive). Lleva a /tienda. */
 export function StoreTeaser() {
@@ -11,7 +13,7 @@ export function StoreTeaser() {
           <div className="eyebrow text-xs text-primary">Tienda</div>
           <h2 className="heading-display mt-2 text-3xl text-foreground sm:text-4xl">Lleva la cumbre puesta</h2>
           <p className="mt-2 max-w-lg text-pretty text-sm text-muted-foreground sm:text-base">
-            Camisetas, busos, tazas y peluches de Cumbreva. Para los pioneros de la movilidad electrica.
+            Camisetas, hoodies, gorras, tazas y peluches de Cumbreva. Para los pioneros de la movilidad eléctrica.
           </p>
         </div>
         <Link
@@ -22,19 +24,23 @@ export function StoreTeaser() {
         </Link>
       </div>
 
-      <div className="-mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:px-0 lg:grid lg:grid-cols-4 lg:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {PRODUCTOS.map((p) => (
+      <div className="mt-8">
+        <CarouselRow className="-mx-5 px-5 pb-3 sm:mx-0 sm:px-0">
+          {PRODUCTOS.map((p) => (
           <Link
             key={p.id}
             href="/tienda"
-            className="group flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/40 sm:w-[42%] lg:w-auto"
+            className="group flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/40 sm:w-[38%] lg:w-[23%]"
           >
-            <div className="aspect-square overflow-hidden bg-muted/30">
+            <div className="aspect-square overflow-hidden bg-black">
               <img
                 src={p.imagenes[0]}
                 alt={p.nombre}
                 loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                className={cn(
+                  "h-full w-full transition-transform duration-300 group-hover:scale-[1.03]",
+                  p.encaje === "cover" ? "object-cover" : "object-contain p-1",
+                )}
               />
             </div>
             <div className="flex items-center justify-between p-3 sm:p-4">
@@ -42,7 +48,8 @@ export function StoreTeaser() {
               <span className="shrink-0 text-sm font-bold text-foreground">{formatoCOP(p.precio)}</span>
             </div>
           </Link>
-        ))}
+          ))}
+        </CarouselRow>
       </div>
     </section>
   )

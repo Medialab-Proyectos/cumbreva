@@ -19,7 +19,7 @@ export const BRAND = {
   name: "Cumbreva",
   tagline: "Tu copiloto electrico",
   description:
-    "Cumbreva es una app para carro electrico en Colombia para saber si te alcanza la bateria, planear rutas con carga y encontrar donde cargar el vehiculo.",
+    "Antes de salir, Cumbreva calcula si tu carro electrico llega con la bateria actual, la ruta real y la montana colombiana.",
   company: "Medialab Ingenieria",
   companyUrl: "https://medialab.design/",
   country: "Colombia",

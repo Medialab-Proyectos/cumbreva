@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+import { Expand, X } from "lucide-react"
 import type { Coord } from "@/lib/calc-physics"
 
 // Paleta de la firma visual (verde neón sobre carbón) — coherente con la marca.
@@ -56,21 +58,67 @@ export function MedidorBateria({
   )
 }
 
-export function MapaRuta({
-  coords,
-  distKm,
-  alcanza,
-  kmAlcance,
-  origen,
-  destino,
-}: {
+type MapaProps = {
   coords: Coord[]
   distKm: number
   alcanza: boolean
   kmAlcance: number
   origen: string
   destino: string
-}) {
+}
+
+export function MapaRuta(props: MapaProps) {
+  const [full, setFull] = useState(false)
+  if (!props.coords || props.coords.length < 2) return null
+  return (
+    <>
+      {/* translateZ(0) promueve el mapa a su propia capa: el navegador lo
+          rasteriza una sola vez y el scroll no lo vuelve a repintar. */}
+      <div className="relative [transform:translateZ(0)]">
+        <MapaSVG {...props} className="block h-auto w-full rounded-xl" />
+        <button
+          type="button"
+          onClick={() => setFull(true)}
+          aria-label="Ver mapa en pantalla completa"
+          className="absolute right-2 top-2 inline-flex size-8 items-center justify-center rounded-lg border border-border bg-background/70 text-foreground backdrop-blur-sm transition-colors hover:bg-background"
+        >
+          <Expand className="size-4" />
+        </button>
+      </div>
+
+      {full && (
+        <div className="fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col bg-background">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3">
+            <span className="text-sm font-semibold text-foreground">
+              Mapa de la ruta · {Math.round(props.distKm)} km
+            </span>
+            <button
+              type="button"
+              onClick={() => setFull(false)}
+              aria-label="Cerrar mapa"
+              className="inline-flex size-9 items-center justify-center rounded-lg border border-border bg-card/40 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            >
+              <X className="size-5" />
+            </button>
+          </div>
+          <div className="flex flex-1 items-center justify-center overflow-auto p-4">
+            <MapaSVG {...props} className="h-auto max-h-full w-full max-w-3xl rounded-xl" />
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+function MapaSVG({
+  coords,
+  distKm,
+  alcanza,
+  kmAlcance,
+  origen,
+  destino,
+  className,
+}: MapaProps & { className?: string }) {
   if (!coords || coords.length < 2) return null
   const W = 600,
     H = 340,
@@ -124,7 +172,7 @@ export function MapaRuta({
   }
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full rounded-xl" style={{ background: "#080b07" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} className={className ?? "block h-auto w-full rounded-xl"} style={{ background: "#080b07" }}>
       <defs>
         <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="2.4" result="b" />
@@ -138,25 +186,26 @@ export function MapaRuta({
         </pattern>
       </defs>
       <rect width={W} height={H} fill="url(#grid)" />
-      {segmentos.map((s, i) => (
-        <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={s.color} strokeWidth="3.4" strokeLinecap="round" filter="url(#glow)" />
-      ))}
-      <circle cx={ox} cy={oy} r="7" fill={C.neon} filter="url(#glow)" />
+      {/* Un solo filtro de glow para toda la ruta (antes era 1 por segmento). */}
+      <g filter="url(#glow)">
+        {segmentos.map((s, i) => (
+          <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={s.color} strokeWidth="3.4" strokeLinecap="round" />
+        ))}
+        <circle cx={ox} cy={oy} r="7" fill={C.neon} />
+        <circle cx={dx} cy={dy} r="7" fill={C.amber} />
+        {puntoCorte && <circle cx={puntoCorte[0]} cy={puntoCorte[1]} r="7" fill={C.red} />}
+      </g>
       <circle cx={ox} cy={oy} r="13" fill="none" stroke={C.neon} strokeWidth="1.2" opacity="0.5" />
       <text x={ox} y={oy - 18} fill={C.text} fontSize="12" fontWeight="600" textAnchor="middle">
         {recortar(origen)}
       </text>
-      <circle cx={dx} cy={dy} r="7" fill={C.amber} filter="url(#glow)" />
       <text x={dx} y={dy - 18} fill={C.text} fontSize="12" fontWeight="600" textAnchor="middle">
         {recortar(destino)}
       </text>
       {puntoCorte && (
-        <>
-          <circle cx={puntoCorte[0]} cy={puntoCorte[1]} r="7" fill={C.red} filter="url(#glow)" />
-          <text x={puntoCorte[0]} y={puntoCorte[1] + 24} fill={C.red} fontSize="11" fontWeight="700" textAnchor="middle">
-            ⚠ batería 0%
-          </text>
-        </>
+        <text x={puntoCorte[0]} y={puntoCorte[1] + 24} fill={C.red} fontSize="11" fontWeight="700" textAnchor="middle">
+          ⚠ batería 0%
+        </text>
       )}
       <g transform={`translate(${pad - 18}, ${H - 16})`} fontSize="10" fill={C.dim}>
         <circle cx="4" cy="-3" r="4" fill={C.neon} />

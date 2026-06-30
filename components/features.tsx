@@ -1,6 +1,5 @@
 import {
   BatteryCharging,
-  FileText,
   MapPin,
   Route,
   ShieldCheck,
@@ -25,18 +24,18 @@ const features = [
   },
   {
     icon: MapPin,
-    title: "Electrolineras",
-    desc: "Ubica estaciones de carga cercanas para moverte con mas confianza.",
+    title: "Puntos de carga",
+    desc: "Revisa zonas de carga cercanas a tu ruta para decidir con mas margen.",
   },
   {
-    icon: FileText,
-    title: "Documentos",
-    desc: "Ten a la mano la informacion y los documentos clave de tu vehiculo.",
+    icon: ShieldCheck,
+    title: "Margen de llegada",
+    desc: "Entiende si llegas tranquilo, justo o si conviene cargar antes de salir.",
   },
   {
     icon: ShieldCheck,
     title: "Control diario",
-    desc: "Todo lo importante de tu carro electrico en una sola app, sin saltar entre herramientas.",
+    desc: "Una lectura clara de bateria, autonomia y ruta para uno o varios vehiculos electricos.",
   },
 ]
 
@@ -46,11 +45,11 @@ export function Features() {
       <div className="mb-14 max-w-2xl">
         <p className="eyebrow mb-4 text-xs text-primary">Todo a mano</p>
         <h2 className="heading-display text-balance text-4xl text-foreground sm:text-5xl">
-          Una sola app para tu vida electrica
+          Un copiloto para tu vida electrica
         </h2>
         <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-          Cumbreva reune lo esencial para conducir un vehiculo electrico con mas claridad:
-          autonomia, carga, ruta y control del vehiculo.
+          Cumbreva te ayuda a responder la pregunta importante antes de moverte:
+          con esta bateria y esta ruta, llego o debo cargar primero?
         </p>
       </div>
 

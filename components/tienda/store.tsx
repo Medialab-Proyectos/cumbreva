@@ -17,7 +17,7 @@ export function Store() {
           <div className="eyebrow text-xs text-primary">Tienda Cumbreva</div>
           <h1 className="heading-display mt-2 text-3xl text-foreground sm:text-4xl">Lleva la cumbre puesta</h1>
           <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-            Camisetas, busos, tazas y peluches de Cumbreva. Edicion para los pioneros de la movilidad electrica.
+            Camisetas, hoodies, gorras, tazas y peluches de Cumbreva. Edición para los pioneros de la movilidad eléctrica.
           </p>
         </div>
         <Button size="lg" variant="outline" onClick={() => setOpen(true)} className="relative">
@@ -39,9 +39,11 @@ export function Store() {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-3 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {PRODUCTOS.map((p) => (
-          <ProductoCard key={p.id} producto={p} />
+          <div key={p.id} className="w-[72%] shrink-0 snap-start sm:w-auto">
+            <ProductoCard producto={p} />
+          </div>
         ))}
       </div>
     </div>
@@ -55,13 +57,16 @@ function ProductoCard({ producto }: { producto: Producto }) {
   const rotar = (dir: number) => setVista((v) => (v + dir + galeria.length) % galeria.length)
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/40">
-      <div className="relative aspect-square overflow-hidden bg-muted/30">
+    <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/40">
+      <div className="relative aspect-square overflow-hidden bg-black">
         <img
           src={galeria[vista]}
           alt={producto.nombre}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+          className={cn(
+            "h-full w-full transition-transform duration-300 group-hover:scale-[1.03]",
+            producto.encaje === "cover" ? "object-cover" : "object-contain p-1",
+          )}
         />
         {producto.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2.5 py-1 text-[11px] font-semibold text-primary backdrop-blur">
