@@ -1,5 +1,6 @@
 import { AppShowcase } from "@/components/app-showcase"
 import { BrandMarquee } from "@/components/brand-marquee"
+import { DownloadApp } from "@/components/download-app"
 import { Faq } from "@/components/faq"
 import { Features } from "@/components/features"
 import { Hero } from "@/components/hero"
@@ -22,6 +23,7 @@ export default function Page() {
         <BrandMarquee />
         <Features />
         <AppShowcase />
+        <DownloadApp />
         <WaitlistSection />
         <Faq />
         <StoreTeaser />
