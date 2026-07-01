@@ -121,6 +121,8 @@ export function WaitlistForm({ className }: { className?: string }) {
             required
             value={form.nombre}
             onChange={update("nombre")}
+            pattern="[A-Za-zÀ-ÿ\s.'-]+"
+            title="Escribe solo letras"
             placeholder="Ej. Juan Pérez"
             className={inputBase}
           />
@@ -144,6 +146,8 @@ export function WaitlistForm({ className }: { className?: string }) {
             required
             value={form.ciudad}
             onChange={update("ciudad")}
+            pattern="[A-Za-zÀ-ÿ\s.'-]+"
+            title="Escribe solo letras"
             placeholder="Ej. Bogotá"
             className={inputBase}
           />

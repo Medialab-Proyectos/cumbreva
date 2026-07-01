@@ -1259,9 +1259,11 @@ function Desglose({ res }: { res: Resultado }) {
 
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-primary/25 bg-card p-6 shadow-2xl sm:p-7">
-        {children}
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/75 backdrop-blur-sm" onClick={onClose}>
+      <div className="flex min-h-full items-center justify-center px-4 pb-10 pt-20 sm:pt-10">
+        <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-primary/25 bg-card p-6 shadow-2xl sm:p-7">
+          {children}
+        </div>
       </div>
     </div>
   )

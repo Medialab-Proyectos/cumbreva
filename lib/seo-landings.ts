@@ -66,12 +66,8 @@ export const seoLandings: SeoLanding[] = [
       label: "Recibir acceso",
       href: waitlistHref("calculadora-autonomia-carro-electrico-colombia"),
     },
-    heroImage: "/seo-assets/places/bogota.jpg",
-    heroAlt: "Bogota como punto de partida para calcular autonomia electrica con Cumbreva",
-    imageCredit: {
-      label: "Lorna Phillips / Wikimedia Commons",
-      href: "https://commons.wikimedia.org/wiki/File:Bogota_cityscape_3.jpg",
-    },
+    heroImage: "/seo-assets/landings/calculadora-autonomia.png",
+    heroAlt: "Conductor revisando si la bateria alcanza antes de salir en carro electrico",
     proof: ["Autonomia real", "Margen de llegada", "Decision clara"],
     intent:
       "Para esos momentos en los que el tablero dice una cosa, la ruta dice otra y uno necesita salir con calma.",
@@ -147,12 +143,8 @@ export const seoLandings: SeoLanding[] = [
       label: "Recibir acceso",
       href: waitlistHref("planificador-rutas-carros-electricos-colombia"),
     },
-    heroImage: "/seo-assets/places/eje-cafetero.jpg",
-    heroAlt: "Paisaje de carretera en el Eje Cafetero para planear una ruta electrica",
-    imageCredit: {
-      label: "Triangulo del Cafe Travel / Wikimedia Commons",
-      href: "https://commons.wikimedia.org/wiki/File:Cafetales,_en_Colombia.jpg",
-    },
+    heroImage: "/seo-assets/landings/planificador-rutas.png",
+    heroAlt: "Ruta de carro electrico planeada con bateria, cargadores y margen de llegada",
     proof: ["Ruta", "Carga", "Margen"],
     intent:
       "Para convertir un viaje que da nervios en una ruta con paradas y decisiones mas claras.",
@@ -228,12 +220,8 @@ export const seoLandings: SeoLanding[] = [
       label: "Calcular una ruta",
       href: calculatorHref("cuanto-cuesta-cargar-carro-electrico-colombia"),
     },
-    heroImage: "/seo-assets/vehicles/byd-seagull.jpg",
-    heroAlt: "Carro electrico BYD Seagull para estimar costo y autonomia de carga",
-    imageCredit: {
-      label: "User3204 / Wikimedia Commons",
-      href: "https://commons.wikimedia.org/wiki/File:2023_BYD_Seagull_(front).jpg",
-    },
+    heroImage: "/seo-assets/landings/costo-carga.png",
+    heroAlt: "Carga de carro electrico con estimacion de costo y energia consumida",
     proof: ["Energia", "Ruta", "Ahorro"],
     intent:
       "Para compradores que quieren saber si el ahorro se siente en la vida diaria, no solo en una tabla.",
@@ -309,12 +297,8 @@ export const seoLandings: SeoLanding[] = [
       label: "Entrar a la lista",
       href: waitlistHref("puntos-carga-carros-electricos-colombia"),
     },
-    heroImage: "/seo-assets/places/villavicencio.jpg",
-    heroAlt: "Villavicencio como destino para revisar puntos de carga en ruta electrica",
-    imageCredit: {
-      label: "CarlosE Duarte / Wikimedia Commons",
-      href: "https://commons.wikimedia.org/wiki/File:Villavicencio,_Meta,_Colombia_-_panoramio_(7).jpg",
-    },
+    heroImage: "/seo-assets/landings/puntos-carga.png",
+    heroAlt: "Puntos de carga para carro electrico vistos sobre una ruta en Colombia",
     proof: ["Cercania", "Compatibilidad", "Margen"],
     intent:
       "Para dejar de mirar puntos sueltos y empezar a decidir donde cargar segun el viaje.",
@@ -390,12 +374,8 @@ export const seoLandings: SeoLanding[] = [
       label: "Probar calculadora",
       href: calculatorHref("app-conductores-carros-electricos"),
     },
-    heroImage: "/seo-assets/vehicles/volvo-ex30.jpg",
-    heroAlt: "Volvo EX30 como referencia de carro electrico para conductores de Cumbreva",
-    imageCredit: {
-      label: "Alexander-93 / Wikimedia Commons",
-      href: "https://commons.wikimedia.org/wiki/File:Volvo_EX30_DSC_6073.jpg",
-    },
+    heroImage: "/seo-assets/landings/app-conductores.png",
+    heroAlt: "App Cumbreva ayudando a un conductor de carro electrico a decidir su ruta",
     proof: ["Autonomia", "Historial", "Comunidad"],
     intent:
       "Para quienes ya manejan electrico o estan a punto de hacerlo y quieren una herramienta hecha para su rutina.",
@@ -548,12 +528,8 @@ export const seoLandings: SeoLanding[] = [
       label: "Calcular autonomia",
       href: calculatorHref("guia-carros-electricos-colombia"),
     },
-    heroImage: "/seo-assets/vehicles/renault-kwid.jpg",
-    heroAlt: "Renault Kwid electrico como referencia para nuevos usuarios de carros electricos",
-    imageCredit: {
-      label: "Autosdeprimera / Wikimedia Commons",
-      href: "https://commons.wikimedia.org/wiki/File:2023_Renault_Kwid_Iconic_(Colombia)_front_view_01.png",
-    },
+    heroImage: "/seo-assets/landings/guia-carros-electricos.png",
+    heroAlt: "Guia visual para entender autonomia, carga y costo de carros electricos",
     proof: ["Autonomia", "Carga", "Costo"],
     intent:
       "Para bajar la barrera de entrada: menos tecnicismos, mas decisiones practicas.",

@@ -60,21 +60,23 @@ export function OpenCalculatorButton({
 
       {open && (
         <div
-          className="fixed inset-0 z-[110] flex items-start justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm sm:p-8"
+          className="fixed inset-0 z-[110] overflow-y-auto bg-black/75 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative my-auto w-full max-w-3xl rounded-3xl border border-border bg-background p-5 shadow-2xl sm:p-8"
-          >
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Cerrar"
-              className="absolute right-4 top-4 z-10 flex size-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
+          <div className="flex min-h-full items-start justify-center px-4 pb-10 pt-20 sm:px-8 sm:pt-24">
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-3xl rounded-3xl border border-border bg-background p-5 shadow-2xl sm:p-8"
             >
-              <X className="size-4" />
-            </button>
-            <Calculator />
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Cerrar"
+                className="absolute right-4 top-4 z-10 flex size-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
+              <Calculator />
+            </div>
           </div>
         </div>
       )}

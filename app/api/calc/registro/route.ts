@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     if (!kvConfigured()) {
       return NextResponse.json(
-        { error: "La base de datos no está configurada. Configura Vercel KV." },
+        { error: "El registro no está disponible en este momento. Inténtalo de nuevo en unos minutos." },
         { status: 503 },
       )
     }
